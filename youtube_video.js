@@ -1,0 +1,47 @@
+const ytdl = require("ytdl-core");
+
+module.exports = YoutubeVideo = function(video, info) {
+    this.video = video;
+    this.title = info.title;
+    this.author = info.author;
+    this.viewCount = info.viewCount || info.view_count;
+    this.lengthSeconds = info.lengthSeconds || info.length_seconds;
+}
+
+YoutubeVideo.getInfoFromVid = function(vid, m, callBack) {
+    var requestUrl = "http://www.youtube.com/watch?v=" + vid;
+    ytdl.getInfo(requestUrl, (err, info) => {
+        if (err){
+            callBack(err, null);
+        }
+        else {
+            var video = new YoutubeVideo(vid, info);
+            video.userId = m.author.id;
+            video.containedVideo = info;
+            callBack(null, video);
+        }
+    });
+};
+
+YoutubeVideo.prototype.print() = function () {
+    return this.title + " by " + this.author;
+};
+
+YoutubeVideo.prototype.saveable = function () {
+    return {
+        vid: this.vid,
+        title: this.title,
+        author: this.author,
+        viewCount: this.viewCount,
+    lengthSeconds: this.lengthSeconds,
+    };
+};
+
+YoutubeVideo.prototype.getStream = function() {
+    var options = {
+        filter: (format) => format.container === "mp4",
+        quality: "lowest",
+    };
+
+    return ytdl.downloadFromInfo(this.containedVideo, options);
+};
