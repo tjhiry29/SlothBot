@@ -7,7 +7,7 @@ const token = require("config.js").getToken();
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 const youtube_api_key = null; //TODO: Get a youtube api key.
 
-var playQueue = [];
+var videoQueue = [];
 var currentStream = null;
 var currentVideo = null;
 var lastVideo = null;
@@ -48,7 +48,7 @@ bot.on("message", message => {
 function queueVideo(video_url) {
 	video = VideoSaver.retrieveVideo(video_url);
 	if (video != null) {
-		playQueue.push(video);
+		videoQueue.push(video);
 		if (currentVideo == null){
 			nextInQueue();
 		} else {
@@ -59,7 +59,7 @@ function queueVideo(video_url) {
 			if (err) {
 				handleError(err);
 			} else {
-				playQueue.push(video);
+				videoQueue.push(video);
 				// Start playing if no video.
 				if (currentVideo == null){
 					nextInQueue();
@@ -84,8 +84,8 @@ function parseYoutubeUrl(video_url) {
 }
 
 function nextInQueue() {
-	if (playQueue.length > 0) {
-		next = playQueue.shift(); //Pop the next video.
+	if (videoQueue.length > 0) {
+		next = videoQueue.shift(); //Pop the next video.
 		play(next);
 	}
 }
