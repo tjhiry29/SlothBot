@@ -21,7 +21,7 @@ YoutubeVideo.getInfoFromVid = function(vid, m, callBack) {
     });
 };
 
-YoutubeVideo.prototype.print() = function () {
+YoutubeVideo.prototype.print = function () {
     return this.title + " by " + this.author;
 };
 

@@ -3,7 +3,7 @@ const url = require("url");
 const YoutubeVideo = require("./youtube_video");
 const VideoSaver = require("./video_saver");
 const bot = new Discord.Client();
-const token = require("config.js").getToken();
+const token = require("./config").getToken();
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 const youtube_api_key = null; //TODO: Get a youtube api key.
 
@@ -18,7 +18,6 @@ var currentChannel = null;
 bot.on("ready", () => {
 	console.log("I am ready!");
 });
-
 
 bot.on("message", message => {
 	currentChannel = message.channel;
@@ -102,7 +101,9 @@ function play(video) {
 			return;
 		});
 
-		currentStream.on("end", () => setTimeout(playStopped(), 8000));
+		currentStream.on("end", () => {
+			setTimeout(playStopped(), 8000)
+		});
 		connection.playRawStream(currentStream).then(intent => {
 			//something.
 			currentChannel.sendMessage("Playing " + video.print());

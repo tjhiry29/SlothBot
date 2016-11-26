@@ -5,7 +5,6 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 
 # TODO:
 - Add node-opus to package.json
-- Install ffmpeg
 - Set up a server.
 - Test functionality.
 - Find a better way to load up your discord token.
@@ -14,6 +13,7 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 - Maybe set up an esports live updater (That's going to be hard and lots of work)
 
 # Installation:
+- Make sure you have the bot setup on your discord developer portal
 - Clone this repo `git clone https://github.com/tjhiry29/SlothBot.git`
 - Install node-opus first. `npm install node-opus` There are probably going to be a bunch of issues, especially on Windows.
 - Install ffmpeg with `sudo apt-get ffmpeg` or [here](ffmpeg.zeranoe.com/builds/)
