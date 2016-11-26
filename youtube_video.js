@@ -4,8 +4,6 @@ module.exports = YoutubeVideo = function(video, info) {
     this.video = video;
     this.title = info.title;
     this.author = info.author;
-    this.viewCount = info.viewCount || info.view_count;
-    this.lengthSeconds = info.lengthSeconds || info.length_seconds;
 }
 
 YoutubeVideo.getInfoFromVid = function(vid, m, callBack) {
@@ -31,9 +29,7 @@ YoutubeVideo.prototype.saveable = function () {
     return {
         vid: this.vid,
         title: this.title,
-        author: this.author,
-        viewCount: this.viewCount,
-    lengthSeconds: this.lengthSeconds,
+        author: this.author
     };
 };
 
