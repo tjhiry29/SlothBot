@@ -3,7 +3,7 @@ const url = require("url");
 const YoutubeVideo = require("./youtube_video");
 const VideoSaver = require("./video_saver");
 const bot = new Discord.Client();
-const token = "MjUwNDIyMDcyOTkwMjM2Njcy.CxU8VQ.Nsv5rXv_iwPAkX98DggnkH9zfdQ";
+const token = require("config.js").getToken();
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 const youtube_api_key = null; //TODO: Get a youtube api key.
 
