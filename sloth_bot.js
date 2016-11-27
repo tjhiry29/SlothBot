@@ -142,6 +142,9 @@ function play(video) {
 		currentVoiceChannel.join().then(connection => {
 			connection.playStream(currentStream, {volume: volume});
 		}).catch(console.error);
+	} else {
+		currentVideo = null;
+		currentChannel.sendMessage("Error, which voice channel do I join?!");
 	}
 }
 
