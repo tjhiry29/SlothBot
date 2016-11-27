@@ -15,6 +15,11 @@ var currentChannel = null;
 
 //TODO: Install ffmpeg, and node-opus, then test.
 
+process.on("unhandledRejection", (reason, promise) => {
+	console.log(reason);
+	console.log(promise);
+})
+
 bot.on("ready", () => {
 	console.log("I am ready!");
 });
@@ -24,17 +29,24 @@ bot.on("message", message => {
 	if (message.content == "ping") {
 		currentChannel.sendMessage("pong");
 	}
-	if (message.content.includes('-play')) {
+	if (message.content.includes("-stop")) {
+		if (currentVideo != null) {
+			stopCurrentVideo();
+		} else {
+			currentChannel.sendMessage("There's currently no video being played");
+		}
+	}
+	if (message.content.includes('-play')) { //play youtubelink
 		parse = message.content.match(/-play (.+)/)[1];
 		if (parse.match(regex)){
 			//youtube link
-			vid = parseYoutubeUrl(parse);
+			video_query = parseYoutubeUrl(parse);
 
-			if (vid == null) {
+			if (video_query == null) {
 				currentChannel.sendMessage("There was an error with parsing this url");
 			}
 
-			queueVideo(vid);
+			queueVideo(video_query);
 		} else {
 			//TODO: search query once I get a youtube api key.
 			currentChannel.sendMessage("Can't search for videos right now");
@@ -44,8 +56,8 @@ bot.on("message", message => {
 	}
 });
 
-function queueVideo(video_url) {
-	video = VideoSaver.retrieveVideo(video_url);
+function queueVideo(video_query) {
+	video = VideoSaver.retrieveVideo(video_query);
 	if (video != null) {
 		videoQueue.push(video);
 		if (currentVideo == null){
@@ -54,9 +66,10 @@ function queueVideo(video_url) {
 			currentChannel.sendMessage("Video was queued");
 		}
 	} else {
-		YoutubeVideo.getInfoFromVid(video_url, m, (err, video) => {
+		YoutubeVideo.getInfoFromVideo(video_query, m, (err, video) => {
 			if (err) {
 				handleError(err);
+				return;
 			} else {
 				videoQueue.push(video);
 				// Start playing if no video.
@@ -84,8 +97,8 @@ function parseYoutubeUrl(video_url) {
 
 function nextInQueue() {
 	if (videoQueue.length > 0) {
-		next = videoQueue.shift(); //Pop the next video.
-		play(next);
+		video = videoQueue.shift(); //Pop the next video.
+		play(video);
 	}
 }
 
@@ -96,22 +109,22 @@ function play(video) {
 		currentStream = video.getStream();
 
 		currentStream.on("error", (err) => {
-			playStopped();
+			stopCurrentVideo();
 			handleError(err);
 			return;
 		});
 
 		currentStream.on("end", () => {
-			setTimeout(playStopped(), 8000)
+			setTimeout(stopCurrentVideo, 8000)
 		});
 		connection.playRawStream(currentStream).then(intent => {
 			//something.
-			currentChannel.sendMessage("Playing " + video.print());
+			currentChannel.sendMessage("Playing " + currentVideo.print());
 		});
 	}
 }
 
-function playStopped() {
+function stopCurrentVideo() {
 	if (client.interal.voiceConnection) client.interal.voiceConnection.stopPlaying();
 
 	currentVideo = null;

@@ -26,11 +26,11 @@ exports.save = function(video) {
     videos.insert(video);
 };
 
-exports.retrieveVideo = function(arg) {
+exports.retrieveVideo = function(video_query) {
     if (videos == null) {
         setUpCollection();
     }
-    video = videos.find({video: arg});
+    video = videos.find({video: video_query});
     if (video == null) {
         return "There was an error";
     } else {

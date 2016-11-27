@@ -6,17 +6,17 @@ module.exports = YoutubeVideo = function(video, info) {
     this.author = info.author;
 }
 
-YoutubeVideo.getInfoFromVid = function(vid, m, callBack) {
+YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
     var requestUrl = "http://www.youtube.com/watch?v=" + vid;
     ytdl.getInfo(requestUrl, (err, info) => {
         if (err){
-            callBack(err, null);
+            callBack(err, undefined);
         }
         else {
             var video = new YoutubeVideo(vid, info);
             video.userId = m.author.id;
             video.containedVideo = info;
-            callBack(null, video);
+            callBack(undefined, video);
         }
     });
 };
