@@ -1,43 +1,43 @@
-const ytdl = require("ytdl-core");
+const ytdl = require('ytdl-core');
 
 module.exports = YoutubeVideo = function(video, info) {
-    this.video = video;
-    this.title = info.title;
-    this.author = info.author;
+  this.video = video;
+  this.title = info.title;
+  this.author = info.author;
 }
 
 YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
-    var requestUrl = "http://www.youtube.com/watch?v=" + vid;
-    ytdl.getInfo(requestUrl, (err, info) => {
-        if (err){
-            callBack(err, undefined);
-        }
-        else {
-            var video = new YoutubeVideo(vid, info);
-            video.userId = m.author.id;
-            video.containedVideo = info;
-            callBack(undefined, video);
-        }
-    });
+  var requestUrl = "http://www.youtube.com/watch?v=" + vid;
+  ytdl.getInfo(requestUrl, (err, info) => {
+    if (err){
+      callBack(err, undefined);
+    }
+    else {
+      var video = new YoutubeVideo(vid, info);
+      video.userId = m.author.id;
+      video.containedVideo = info;
+      callBack(undefined, video);
+    }
+  });
 };
 
 YoutubeVideo.prototype.print = function () {
-    return this.title + " by " + this.author;
-};
+  return this.title + ' by ' + this.author
+}
 
 YoutubeVideo.prototype.saveable = function () {
-    return {
-        vid: this.vid,
-        title: this.title,
-        author: this.author
-    };
-};
+  return {
+    vid: this.vid,
+    title: this.title,
+    author: this.author
+  }
+}
 
 YoutubeVideo.prototype.getStream = function() {
-    var options = {
-        filter: (format) => format.container === "mp4",
-        quality: "lowest",
-    };
+  var options = {
+      filter: (format) => format.container === "mp4",
+      quality: "lowest",
+  };
 
-    return ytdl.downloadFromInfo(this.containedVideo, options);
+  return ytdl.downloadFromInfo(this.containedVideo, options);
 };

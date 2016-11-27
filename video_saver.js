@@ -31,8 +31,8 @@ exports.retrieveVideo = function(video_query) {
         setUpCollection();
     }
     video = videos.find({video: video_query});
-    if (video == null) {
-        return "There was an error";
+    if (video == null || video.length == 0) {
+        return null;
     } else {
         return video;
     }

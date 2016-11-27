@@ -12,6 +12,9 @@ var currentStream = null;
 var currentVideo = null;
 var lastVideo = null;
 var currentChannel = null;
+var currentVoiceChannel = null;
+var currentDispatcher = null;
+var volume = 0.5; //Default to half
 
 //TODO: Install ffmpeg, and node-opus, then test.
 
@@ -25,6 +28,7 @@ bot.on("ready", () => {
 });
 
 bot.on("message", message => {
+	findVoiceChannel(message);
 	currentChannel = message.channel;
 	if (message.content == "ping") {
 		currentChannel.sendMessage("pong");
@@ -36,17 +40,36 @@ bot.on("message", message => {
 			currentChannel.sendMessage("There's currently no video being played");
 		}
 	}
+	if (message.content.includes('-vol')) {
+		var parse = message.content.match(/-vol (.+)/);
+		if (parse != null) {
+			parse = parse[1];
+		} else {
+			currentChannel.sendMessage("The current volume is " + volume*100.0);
+			return;
+		}
+		parse = parseInt(parse)
+		if (parse != null) {
+			parse = parse/100.0; // User's input on a scale of 100-0, Discord uses 1-0
+			volume = parse;
+			if (currentVideo != null) {
+				currentChannel.sendMessage("Set volume to " + parse*100.0 + " for the next video");
+			} else {
+				currentChannel.sendMessage("Set volume to " + parse*100.0);
+			}
+		}
+	}
 	if (message.content.includes('-play')) { //play youtubelink
-		parse = message.content.match(/-play (.+)/)[1];
+		var parse = message.content.match(/-play (.+)/)[1];
 		if (parse.match(regex)){
 			//youtube link
-			video_query = parseYoutubeUrl(parse);
+			var video_query = parseYoutubeUrl(parse);
 
 			if (video_query == null) {
 				currentChannel.sendMessage("There was an error with parsing this url");
 			}
 
-			queueVideo(video_query);
+			queueVideo(video_query, message);
 		} else {
 			//TODO: search query once I get a youtube api key.
 			currentChannel.sendMessage("Can't search for videos right now");
@@ -56,8 +79,8 @@ bot.on("message", message => {
 	}
 });
 
-function queueVideo(video_query) {
-	video = VideoSaver.retrieveVideo(video_query);
+function queueVideo(video_query, m) {
+	var video = VideoSaver.retrieveVideo(video_query);
 	if (video != null) {
 		videoQueue.push(video);
 		if (currentVideo == null){
@@ -104,8 +127,7 @@ function nextInQueue() {
 
 function play(video) {
 	currentVideo = video;
-	if (bot.internal.voiceConnection) {
-		var connection = bot.internal.voiceConnection;
+	if (currentVoiceChannel != null) {
 		currentStream = video.getStream();
 
 		currentStream.on("error", (err) => {
@@ -117,18 +139,35 @@ function play(video) {
 		currentStream.on("end", () => {
 			setTimeout(stopCurrentVideo, 8000)
 		});
-		connection.playRawStream(currentStream).then(intent => {
-			//something.
-			currentChannel.sendMessage("Playing " + currentVideo.print());
-		});
+		currentVoiceChannel.join().then(connection => {
+			connection.playStream(currentStream, {volume: volume});
+		}).catch(console.error);
 	}
 }
 
 function stopCurrentVideo() {
-	if (client.interal.voiceConnection) client.interal.voiceConnection.stopPlaying();
+	currentVoiceChannel.leave();
+	currentDispatcher = null;
 
 	currentVideo = null;
 	nextInQueue();
+}
+
+function findVoiceChannel(m) {
+	var guild = m.channel.guild;
+	var members = guild.members;
+	for (var channel of guild.channels) {
+		channel = channel[1];
+		if(channel.type == "voice"){
+			for (var member of channel.members) {
+				member = member[1];
+				if (member.user.id == m.author.id){
+					currentVoiceChannel = channel;
+					break;
+				}
+			}
+		}
+	}
 }
 
 bot.login(token);
