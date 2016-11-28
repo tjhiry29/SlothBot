@@ -13,10 +13,7 @@ var currentVideo = null;
 var lastVideo = null;
 var currentChannel = null;
 var currentVoiceChannel = null;
-var currentDispatcher = null;
 var volume = 0.5; //Default to half
-
-//TODO: Install ffmpeg, and node-opus, then test.
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.log(reason);
@@ -30,8 +27,12 @@ bot.on("ready", () => {
 bot.on("message", message => {
 	findVoiceChannel(message);
 	currentChannel = message.channel;
-	if (message.content == "ping") {
-		currentChannel.sendMessage("pong");
+	if (message.content == "-next") {
+		if (currentVideo != null && videoQueue.length > 0) {
+			stopCurrentVideo();
+		} else {
+			currentChannel.sendMessage("There's no next video");
+		}
 	}
 	if (message.content.includes("-stop")) {
 		if (currentVideo != null) {
@@ -86,7 +87,7 @@ function queueVideo(video_query, m) {
 		if (currentVideo == null){
 			nextInQueue();
 		} else {
-			currentChannel.sendMessage("Video was queued");
+			currentChannel.sendMessage("Video was queued " + video.print() + " queued by: " + m.author.username);
 		}
 	} else {
 		YoutubeVideo.getInfoFromVideo(video_query, m, (err, video) => {
@@ -99,7 +100,7 @@ function queueVideo(video_query, m) {
 				if (currentVideo == null){
 					nextInQueue();
 				} else {
-					currentChannel.sendMessage("Video was queued");
+					currentChannel.sendMessage("Video was queued " + video.print() + " queued by: " + m.author.username);
 				}
 			}
 		});
@@ -122,6 +123,8 @@ function nextInQueue() {
 	if (videoQueue.length > 0) {
 		video = videoQueue.shift(); //Pop the next video.
 		play(video);
+	} else {
+		currentChannel.sendMessage("ERROR! No videos in queue.");
 	}
 }
 
@@ -140,6 +143,7 @@ function play(video) {
 			setTimeout(stopCurrentVideo, 8000)
 		});
 		currentVoiceChannel.join().then(connection => {
+			currentChannel.sendMessage("Now playing " + video.print());
 			connection.playStream(currentStream, {volume: volume});
 		}).catch(console.error);
 	} else {
@@ -150,7 +154,6 @@ function play(video) {
 
 function stopCurrentVideo() {
 	currentVoiceChannel.leave();
-	currentDispatcher = null;
 
 	currentVideo = null;
 	nextInQueue();
