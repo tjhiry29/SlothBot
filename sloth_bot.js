@@ -13,7 +13,7 @@ var currentVideo = null;
 var lastVideo = null;
 var currentChannel = null;
 var currentVoiceChannel = null;
-var volume = 0.5; //Default to half
+var volume = 0.25; //Default to 1 quarter
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.log(reason);
@@ -25,8 +25,21 @@ bot.on("ready", () => {
 });
 
 bot.on("message", message => {
+	if (message.author.bot) {
+		return;
+	}
+	if (message.content.match(/^-(.+)/)) {
+		console.log(message.content);
+	}
 	findVoiceChannel(message);
 	currentChannel = message.channel;
+	if (message.content == "-commands") {
+		currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
+	}
+	if (message.content == "-matt meme" || message.content == "-mattmeme") {
+		currentChannel.sendMessage("I'm sure of what I said, but I'm not sure why I said it. - Matt")
+		//TODO: MP3 File.
+	}
 	if (message.content == "-next") {
 		if (currentVideo != null && videoQueue.length > 0) {
 			stopCurrentVideo();
@@ -34,7 +47,7 @@ bot.on("message", message => {
 			currentChannel.sendMessage("There's no next video");
 		}
 	}
-	if (message.content.includes("-stop")) {
+	if (message.content == "-stop") {
 		if (currentVideo != null) {
 			stopCurrentVideo();
 		} else {
@@ -60,7 +73,7 @@ bot.on("message", message => {
 			}
 		}
 	}
-	if (message.content.includes('-play')) { //play youtubelink
+	if (message.content.match(/^-play/)) { //play youtubelink
 		var parse = message.content.match(/-play (.+)/)[1];
 		if (parse.match(regex)){
 			//youtube link
@@ -75,8 +88,6 @@ bot.on("message", message => {
 			//TODO: search query once I get a youtube api key.
 			currentChannel.sendMessage("Can't search for videos right now");
 		}
-		console.log(parse);
-		console.log(message.content);
 	}
 });
 
@@ -124,7 +135,7 @@ function nextInQueue() {
 		video = videoQueue.shift(); //Pop the next video.
 		play(video);
 	} else {
-		currentChannel.sendMessage("ERROR! No videos in queue.");
+		currentChannel.sendMessage("No more videos in queue.");
 	}
 }
 
