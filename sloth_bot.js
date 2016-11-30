@@ -40,6 +40,15 @@ bot.on("message", message => {
 		currentChannel.sendMessage("I'm sure of what I said, but I'm not sure why I said it. - Matt")
 		//TODO: MP3 File.
 	}
+	if (message.content == "-mexican beep song") {
+		var video_query = parseYoutubeUrl("https://www.youtube.com/watch?v=x47NYUbtYb0");
+
+		if (video_query == null) {
+			currentChannel.sendMessage("There was an error with parsing this url");
+		}
+
+		queueVideo(video_query, message);
+	}
 	if (message.content == "-next") {
 		if (currentVideo != null && videoQueue.length > 0) {
 			stopCurrentVideo();
