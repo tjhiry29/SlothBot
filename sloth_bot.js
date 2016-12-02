@@ -41,13 +41,10 @@ bot.on("message", message => {
 		//TODO: MP3 File.
 	}
 	if (message.content == "-mexican beep song") {
-		var video_query = parseYoutubeUrl("https://www.youtube.com/watch?v=x47NYUbtYb0");
-
-		if (video_query == null) {
-			currentChannel.sendMessage("There was an error with parsing this url");
-		}
-
-		queueVideo(video_query, message);
+		playYoutubeVideoFromUrl("https://www.youtube.com/watch?v=x47NYUbtYb0", message);
+	}
+	if (message.content == "-sexy sax man") {
+		playYoutubeVideoFromUrl("https://www.youtube.com/watch?v=GaoLU6zKaws", message);
 	}
 	if (message.content == "-next") {
 		if (currentVideo != null && videoQueue.length > 0) {
@@ -85,20 +82,22 @@ bot.on("message", message => {
 	if (message.content.match(/^-play/)) { //play youtubelink
 		var parse = message.content.match(/-play (.+)/)[1];
 		if (parse.match(regex)){
-			//youtube link
-			var video_query = parseYoutubeUrl(parse);
-
-			if (video_query == null) {
-				currentChannel.sendMessage("There was an error with parsing this url");
-			}
-
-			queueVideo(video_query, message);
+			playYoutubeVideoFromUrl(parse, message);
 		} else {
 			//TODO: search query once I get a youtube api key.
 			currentChannel.sendMessage("Can't search for videos right now");
 		}
 	}
 });
+
+function playYoutubeVideoFromUrl(url, message) {
+	var video_query = parseYoutubeUrl(url);
+	if(video_query == null) {
+		currentChannel.sendMessage("There was an error with parsing this url");
+		return;
+	}
+	queueVideo(video_query, message);
+}
 
 function queueVideo(video_query, m) {
 	var video = VideoSaver.retrieveVideo(video_query);
