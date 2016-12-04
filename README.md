@@ -4,9 +4,8 @@ Discord Bot that plays Youtube Videos.
 Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 
 # TODO:
-- Add node-opus to package.json
+- User Permissions
 - Set up a server.
-- Test functionality.
 - Find a better way to load up your discord token.
 
 # Potential Upcoming Features:
@@ -30,6 +29,9 @@ module.exports = exports;
 - To run the bot run `npm start`
 
 # Commands:
-- `ping` bot will return pong in the same channel.
+- `-commmands` displays a list of commands.
 - `-play 'youtubelink'` Will queue video and play if the queue is empty.
     - Ensure that the `youtubelink` looks something like:  https://youtube.com/watch?v=x where 'x' is the video code.
+- `-stop` stops the current video and moves to the next if any.
+- `-next` stops the current video and moves to the next if any.
+- `-vol` has one optional argument. If an argument is passed and is valid it sets the volume. Otherwise it prints the volume.
