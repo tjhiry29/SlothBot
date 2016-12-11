@@ -113,7 +113,12 @@ function checkGuildPermissions(message) {
 }
 
 function checkPermissions(message) {
-	return message.author.roles.find("name", "SlothMaster");
+	var member = message.channel.guild.members.find("id", message.author.id)
+	var has_permission = member && member.roles && member.roles.find("name", "SlothMaster");
+	if (!has_permission) {
+		currentChannel.sendMessage(message.author.username + " you do not have permission to perform this command: " + message.content);
+	}
+	return has_permission;
 }
 
 function playYoutubeVideoFromUrl(url, message) {
