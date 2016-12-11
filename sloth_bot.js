@@ -33,6 +33,9 @@ bot.on("message", message => {
 	}
 	findVoiceChannel(message);
 	currentChannel = message.channel;
+	if (!checkGuildPermissions(message)) {
+		return;
+	}
 	if (message.content == "-commands") {
 		currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
 	}
@@ -47,6 +50,9 @@ bot.on("message", message => {
 		playYoutubeVideoFromUrl("https://www.youtube.com/watch?v=GaoLU6zKaws", message);
 	}
 	if (message.content == "-next") {
+		if (!checkPermissions(message)){
+			return;
+		}
 		if (currentVideo != null && videoQueue.length > 0) {
 			stopCurrentVideo();
 		} else {
@@ -54,6 +60,9 @@ bot.on("message", message => {
 		}
 	}
 	if (message.content == "-stop") {
+		if (!checkPermissions(message)){
+			return;
+		}
 		if (currentVideo != null) {
 			stopCurrentVideo();
 		} else {
@@ -61,6 +70,9 @@ bot.on("message", message => {
 		}
 	}
 	if (message.content.includes('-vol')) {
+		if (!checkPermissions(message)){
+			return;
+		}
 		var parse = message.content.match(/-vol (.+)/);
 		if (parse != null) {
 			parse = parse[1];
@@ -89,6 +101,20 @@ bot.on("message", message => {
 		}
 	}
 });
+
+function checkGuildPermissions(message) {
+	if (!message.guild.roles.find("name", "SlothMaster")) {
+		currentChannel.sendMessage("There is no SlothMaster in this channel. The role will be made");
+		currentChannel.guild.createRole({name: "SlothMaster"})
+												.then(role => console.log("Created role: " + role))
+												.catch(console.error);
+	}
+	return true;
+}
+
+function checkPermissions(message) {
+	return message.author.roles.find("name", "SlothMaster");
+}
 
 function playYoutubeVideoFromUrl(url, message) {
 	var video_query = parseYoutubeUrl(url);
@@ -183,13 +209,11 @@ function findVoiceChannel(m) {
 	var members = guild.members;
 	for (var channel of guild.channels) {
 		channel = channel[1];
-		if(channel.type == "voice"){
-			for (var member of channel.members) {
-				member = member[1];
-				if (member.user.id == m.author.id){
-					currentVoiceChannel = channel;
-					break;
-				}
+		if (channel.type == "voice"){
+			var member = channel.members.find("id", m.author.id);
+			if (member) {
+				currentVoiceChannel = channel;
+				break;
 			}
 		}
 	}
