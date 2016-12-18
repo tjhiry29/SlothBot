@@ -6,7 +6,7 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 # TODO:
 - User Permissions
 - Set up a server.
-- Find a better way to load up your discord token.
+- Find a better way to load up your discord token. (I'm sure a JSON object is way better.)
 
 # Potential Upcoming Features:
 - Maybe set up an esports live updater (That's going to be hard and lots of work)
@@ -21,8 +21,12 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
     The contents should look a little something like this.
 ```
 const token = "...";
+const youtube_api_key = "...";
 exports.getToken = function() {
     return token;
+}
+exports.getYoutubeKey = function() {
+    return youtube_api_key;
 }
 module.exports = exports;
 ```
@@ -30,8 +34,8 @@ module.exports = exports;
 
 # Commands:
 - `-commmands` displays a list of commands.
-- `-play 'youtubelink'` Will queue video and play if the queue is empty.
+- `-play 'youtubelink or query'` Will queue video and play if the queue is empty.
     - Ensure that the `youtubelink` looks something like:  https://youtube.com/watch?v=x where 'x' is the video code.
 - `-stop` stops the current video and moves to the next if any.
 - `-next` stops the current video and moves to the next if any.
-- `-vol` has one optional argument. If an argument is passed and is valid it sets the volume. Otherwise it prints the volume.
+- `-vol (volume or empty)` has one optional argument. If an argument is passed and is valid it sets the volume. Otherwise it prints the volume.

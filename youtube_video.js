@@ -14,7 +14,7 @@ module.exports = YoutubeVideo = function(video, info) {
   this.lengthSeconds = info.lengthSeconds || info.length_seconds;
 }
 
-YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
+YoutubeVideo.getVideo = function(vid, m, callBack) {
   let requestUrl = youtube_url + vid;
   ytdl.getInfo(requestUrl, (err, info) => {
     if (err){

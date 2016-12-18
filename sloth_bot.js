@@ -148,7 +148,7 @@ function queueVideo(video_query, m) {
 			currentChannel.sendMessage("Video was queued " + video.print() + " queued by: " + m.author.username);
 		}
 	} else {
-		YoutubeVideo.getInfoFromVideo(video_query, m, (err, video) => {
+		YoutubeVideo.getVideo(video_query, m, (err, video) => {
 			if (err) {
 				handleError(err);
 				return;
