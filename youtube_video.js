@@ -4,6 +4,8 @@ const http = require("http");
 const youtube_url = "http://www.youtube.com/watch?v="
 const youtube_api_url = "https://www.googleapis.com"
 const youtube_api_path = "/youtube/v3/search"
+const youtube_api_key = require("./config").getYoutubeKey();
+
 
 module.exports = YoutubeVideo = function(video, info) {
   this.video = video;
@@ -30,7 +32,7 @@ YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
 YoutubeVideo.search = function (query) {
   var options = {
     host: youtube_api_url,
-    path: youtube_api_path + "?part=snippet+q=" + query,
+    path: youtube_api_path + "?part=snippet&q=" + query + "&key=" + youtube_api_key,
   }
   http.request(options, function(res) {
     var data = "";

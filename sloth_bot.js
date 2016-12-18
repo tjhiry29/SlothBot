@@ -5,7 +5,6 @@ const VideoSaver = require("./video_saver");
 const bot = new Discord.Client();
 const token = require("./config").getToken();
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
-const youtube_api_key = null; //TODO: Get a youtube api key.
 
 var videoQueue = [];
 var currentStream = null;
