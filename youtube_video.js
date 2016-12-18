@@ -1,9 +1,9 @@
 const ytdl = require('ytdl-core');
 const url = require("url");
-const http = require("http");
+const request = require("superagent");
 const youtube_url = "http://www.youtube.com/watch?v="
-const youtube_api_url = "https://www.googleapis.com"
-const youtube_api_path = "/youtube/v3/search"
+const youtube_api_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
+const youtube_api_path = ""
 const youtube_api_key = require("./config").getYoutubeKey();
 
 
@@ -30,18 +30,20 @@ YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
 };
 
 YoutubeVideo.search = function (query) {
-  var options = {
-    host: youtube_api_url,
-    path: youtube_api_path + "?part=snippet&q=" + query + "&key=" + youtube_api_key,
-  }
-  http.request(options, function(res) {
-    var data = "";
-    response.on("data", function(chunk) {
-      data += chunk;
-    });
-    response.on("end", function(chunk) {
-      console.log(data);
-    });
+  request(youtube_api_url + query + "&key=" + youtube_api_key, (error, response) => {
+    if (!error && response.statusCode == 200) {
+      var body = response.body;
+      if (body.items.length == 0) {
+        return "No query results";
+      }
+      for (var item of body.items) {
+        if (item.id.kind === "youtube#video") {
+          var vid = item.id.videoId;
+          return vid;
+        }
+      }
+    }
+
   });
 };
 

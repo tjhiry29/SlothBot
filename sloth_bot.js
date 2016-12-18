@@ -95,7 +95,12 @@ bot.on("message", message => {
 		if (parse.match(regex)){
 			playYoutubeVideoFromUrl(parse, message);
 		} else {
-			YoutubeVideo.search(parse);
+			var result = YoutubeVideo.search(parse);
+			if (result == "No query results") {
+				bot.handleError(result);
+			} else {
+				playYoutubeVideoFromUrl(result, message);
+			}
 		}
 	}
 });
