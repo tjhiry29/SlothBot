@@ -96,8 +96,7 @@ bot.on("message", message => {
 		if (parse.match(regex)){
 			playYoutubeVideoFromUrl(parse, message);
 		} else {
-			//TODO: search query once I get a youtube api key.
-			currentChannel.sendMessage("Can't search for videos right now");
+			YoutubeVideo.search(parse);
 		}
 	}
 });
