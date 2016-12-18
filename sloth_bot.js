@@ -104,9 +104,13 @@ bot.on("message", message => {
 
 function checkGuildPermissions(message) {
 	if (!message.guild.roles.find("name", "SlothMaster")) {
-		currentChannel.sendMessage("There is no SlothMaster in this channel. The role will be made");
 		currentChannel.guild.createRole({name: "SlothMaster"})
-												.then(role => console.log("Created role: " + role))
+												.then(role => {
+													currentChannel.sendMessage("There is no SlothMaster in this channel. The role will be made");
+													console.log("Created role: " + role)
+												}, error => {
+													currentChannel.sendMessage("There was an error with creating the role, will now try to add role.")
+												})
 												.catch(console.error);
 	}
 	return true;

@@ -1,4 +1,9 @@
 const ytdl = require('ytdl-core');
+const url = require("url");
+const http = require("http");
+const youtube_url = "http://www.youtube.com/watch?v="
+const youtube_api_url = "https://www.googleapis.com"
+const youtube_api_path = "/youtube/v3/search"
 
 module.exports = YoutubeVideo = function(video, info) {
   this.video = video;
@@ -8,7 +13,7 @@ module.exports = YoutubeVideo = function(video, info) {
 }
 
 YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
-  var requestUrl = "http://www.youtube.com/watch?v=" + vid;
+  let requestUrl = youtube_url + vid;
   ytdl.getInfo(requestUrl, (err, info) => {
     if (err){
       callBack(err, undefined);
@@ -19,6 +24,22 @@ YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
       video.containedVideo = info;
       callBack(undefined, video);
     }
+  });
+};
+
+YoutubeVideo.prototype.search = function (query) {
+  var options = {
+    host: youtube_api_url,
+    path: youtube_api_path + "?part=snippet+q=" + query,
+  }
+  http.request(options, function(res) {
+    var data = "";
+    response.on("data", function(chunk) {
+      data += chunk;
+    });
+    response.on("end", function(chunk) {
+      console.log(data);
+    });
   });
 };
 
@@ -41,4 +62,4 @@ YoutubeVideo.prototype.getStream = function() {
   };
 
   return ytdl.downloadFromInfo(this.containedVideo, options);
-};
+}
