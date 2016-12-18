@@ -27,7 +27,7 @@ YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
   });
 };
 
-YoutubeVideo.prototype.search = function (query) {
+YoutubeVideo.search = function (query) {
   var options = {
     host: youtube_api_url,
     path: youtube_api_path + "?part=snippet+q=" + query,
