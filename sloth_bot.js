@@ -99,7 +99,7 @@ bot.on("message", message => {
 			if (result == "No query results") {
 				bot.handleError(result);
 			} else {
-				playYoutubeVideoFromUrl(result, message);
+				queueVideo(result, message); // Already got the video id
 			}
 		}
 	}
