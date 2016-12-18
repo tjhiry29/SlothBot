@@ -95,12 +95,13 @@ bot.on("message", message => {
 		if (parse.match(regex)){
 			playYoutubeVideoFromUrl(parse, message);
 		} else {
-			var result = YoutubeVideo.search(parse);
-			if (result == "No query results") {
-				bot.handleError(result);
-			} else {
-				queueVideo(result, message); // Already got the video id
-			}
+			var result = YoutubeVideo.search(parse, (err, vid) => {;
+				if (err) {
+					bot.handleError(err);
+				} else {
+					queueVideo(vid, message); // Already got the video id
+				}
+			});
 		}
 	}
 });

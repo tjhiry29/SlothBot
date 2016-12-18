@@ -29,17 +29,18 @@ YoutubeVideo.getInfoFromVideo = function(vid, m, callBack) {
   });
 };
 
-YoutubeVideo.search = function (query) {
+YoutubeVideo.search = function (query, callback) {
   request(youtube_api_url + query + "&key=" + youtube_api_key, (error, response) => {
     if (!error && response.statusCode == 200) {
       var body = response.body;
       if (body.items.length == 0) {
-        return "No query results";
+        callback("No query results", undefined);
+        return;
       }
       for (var item of body.items) {
         if (item.id.kind === "youtube#video") {
-          var vid = item.id.videoId;
-          return vid;
+          callback(undefined, item.id.videoId);
+          return;
         }
       }
     }
