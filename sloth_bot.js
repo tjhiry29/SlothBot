@@ -3,6 +3,7 @@ const url = require("url");
 const YoutubeVideo = require("./youtube_video");
 const VideoSaver = require("./video_saver");
 const bot = new Discord.Client();
+const commands = require("./commands");
 const token = require("./config").getToken();
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 
@@ -13,6 +14,7 @@ var lastVideo = null;
 var currentChannel = null;
 var currentVoiceChannel = null;
 var volume = 0.25; //Default to 1 quarter
+var registeredCommands = null;
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.log(reason);
@@ -20,6 +22,8 @@ process.on("unhandledRejection", (reason, promise) => {
 })
 
 bot.on("ready", () => {
+	commands.prefix("-")
+					.register("play", {}, processPlayParameters)
 	console.log("I am ready!");
 });
 

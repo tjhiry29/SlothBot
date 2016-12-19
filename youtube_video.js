@@ -29,7 +29,7 @@ YoutubeVideo.getVideo = function(vid, m, callBack) {
   });
 };
 
-YoutubeVideo.search = function (query, callback) {
+YoutubeVideo.search = function(query, callback) {
   request(youtube_api_url + query + "&key=" + youtube_api_key, (error, response) => {
     if (!error && response.statusCode == 200) {
       var body = response.body;
