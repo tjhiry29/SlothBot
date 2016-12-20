@@ -4,7 +4,7 @@
 
 // Options for now expects a params if available.
 
-module.exports = Commands;
+module.exports = Commands = function() {return Commands.new()};
 
 Commands.new = function() {
   this.registered_commands = [];
