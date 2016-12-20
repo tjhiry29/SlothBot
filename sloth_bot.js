@@ -112,8 +112,12 @@ bot.on("message", message => {
 	// }
 });
 
-function processPlayParameters(message){
-	var parse = message.content.match(/-play (.+)/)[1];
+function processPlayParameters(message, parse) {
+	if (parse == null || parse.length == 0) {
+		handleError("There was an error with the parse: ${parse}");
+		return;
+	}
+	parse = parse[1]; //get the result
 	if (parse.match(regex)){
 		playYoutubeVideoFromUrl(parse, message);
 	} else {
@@ -126,6 +130,7 @@ function processPlayParameters(message){
 		});
 	}
 }
+
 
 function checkGuildPermissions(message) {
 	if (!message.guild.roles.find("name", "SlothMaster")) {
