@@ -20,15 +20,14 @@ Commands.prototype.setPrefix = function(prefix) {
 Commands.prototype.on = function(input, pass_through) {
   var registered_command = this.checkRegistration(input); //Check to see if anything matches this input.
   if (registered_command) {
-    var options = registered_command.options
     var result = null;
-    if (options.result) {
-      result = options.result
+    if (registered_command.result) {
+      result = registered_command.result
     } else {
-      var match = buildMatch(registered_command.command, options.params, this.prefix);
+      var match = buildMatch(registered_command.command, registered_command.params, this.prefix);
       result = input.match(match);
     }
-    registered_command.options.callback(pass_through, result);
+    registered_command.callback(pass_through, result);
   } else {
     console.log("Couldn't process input," + input);
   }
@@ -37,7 +36,7 @@ Commands.prototype.on = function(input, pass_through) {
 Commands.prototype.checkRegistration = function(input) {
   for(var command of Object.keys(this.registered_commands)) {
      if (input.match(this.prefix + command)) {
-       return {command: command, options: this.registered_commands[command]};
+       return this.registered_commands[command];
      }
   }
   return null;
@@ -46,6 +45,7 @@ Commands.prototype.checkRegistration = function(input) {
 // Store registered commands as {match: options hash + callback}
 Commands.prototype.register = function(command, options={}, callback) {
   options.callback = callback;
+  options.command = command;
   this.registered_commands[command] = options;
   return this;
 }
