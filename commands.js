@@ -20,7 +20,7 @@ Commands.prototype.on = function(input, pass_through) {
   var registered_command = this.checkRegistration(input); //Check to see if anything matches this input.
   if (registered_command != null) {
     var options = registered_command.options
-    var match = buildMatch(registered_command.command, options.params);
+    var match = buildMatch(registered_command.command, options.params, this.prefix);
     var result = input.match(match);
     registered_command.options.callback(pass_through, result);
   } else {
@@ -44,10 +44,10 @@ Commands.prototype.register = function(command, options={}, callback) {
   return this;
 }
 
-function buildMatch(match, params=0) {
-  match = this.prefix + match;
+function buildMatch(match, params=0, prefix="") {
+  match = prefix + match;
   for (var i = 0; i < params; i++)  {
-    match += "(.+)";
+    match += " (.+)";
   }
   return match;
 }

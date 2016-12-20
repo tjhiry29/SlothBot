@@ -96,25 +96,11 @@ bot.on("message", message => {
 			}
 		}
 	}
-	// if (message.content.match(/^-play/)) { //play youtubelink
-	// 	var parse = message.content.match(/-play (.+)/)[1];
-	// 	if (parse.match(regex)){
-	// 		playYoutubeVideoFromUrl(parse, message);
-	// 	} else {
-	// 		var result = YoutubeVideo.search(parse, (err, vid) => {;
-	// 			if (err) {
-	// 				bot.handleError(err);
-	// 			} else {
-	// 				queueVideo(vid, message); // Already got the video id
-	// 			}
-	// 		});
-	// 	}
-	// }
 });
 
 function processPlayParameters(message, parse) {
 	if (parse == null || parse.length == 0) {
-		handleError("There was an error with the parse: ${parse}");
+		handleError("There was an error with the parse:" + parse);
 		return;
 	}
 	parse = parse[1]; //get the result
