@@ -18,6 +18,7 @@ Commands.prototype.setPrefix = function(prefix) {
 // as I'd prefer to keep this module completely independent of knowledge of Discord-js
 // so it can be used as a command processer for anything else.
 Commands.prototype.on = function(input, pass_through) {
+  if (this.prefix != "" && !input.match("^" + this.prefix)) return;
   var registered_command = this.checkRegistration(input); //Check to see if anything matches this input.
   if (registered_command) {
     var result = null;
