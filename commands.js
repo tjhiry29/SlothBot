@@ -13,12 +13,13 @@ Commands.prototype.setPrefix = function(prefix) {
   this.prefix = prefix;
   return this;
 }
+
 // Pass through is meant to be a discord message. I'd prefer not to do it this way,
 // as I'd prefer to keep this module completely independent of knowledge of Discord-js
 // so it can be used as a command processer for anything else.
 Commands.prototype.on = function(input, pass_through) {
   var registered_command = this.checkRegistration(input); //Check to see if anything matches this input.
-  if (registered_command != null) {
+  if (registered_command) {
     var options = registered_command.options
     var result = null;
     if (options.result) {
@@ -29,14 +30,14 @@ Commands.prototype.on = function(input, pass_through) {
     }
     registered_command.options.callback(pass_through, result);
   } else {
-    console.log("Couldn't process input, ${input}"); //Don't need to do anything if there's no match.
+    console.log("Couldn't process input," + input);
   }
 }
 
 Commands.prototype.checkRegistration = function(input) {
-  for(var command of Object.keys(this.registered_commands)) { //get keys
-     if (input.match(this.prefix + command)) { //compare key with input
-       return {command: command, options: this.registered_commands[command]}; // return the whole set.
+  for(var command of Object.keys(this.registered_commands)) {
+     if (input.match(this.prefix + command)) {
+       return {command: command, options: this.registered_commands[command]};
      }
   }
   return null;
