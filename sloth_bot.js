@@ -69,7 +69,7 @@ function processPlayParameters(message, parse) {
 	if (parse.match(regex)){
 		playYoutubeVideoFromUrl(parse, message);
 	} else {
-		var result = YoutubeVideo.search(parse, (err, vid) => {;
+		var result = YoutubeVideo.search(parse, (err, vid) => {
 			if (err) {
 				bot.handleError(err);
 			} else {
