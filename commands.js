@@ -17,21 +17,21 @@ Commands.prototype.setPrefix = function(prefix) {
 // as I'd prefer to keep this module completely independent of knowledge of Discord-js
 // so it can be used as a command processer for anything else.
 Commands.prototype.on = function(input, pass_through) {
-  registered_command = checkRegistration(input); //Check to see if anything matches this input.
+  var registered_command = this.checkRegistration(input); //Check to see if anything matches this input.
   if (registered_command != null) {
-    options = registered_command.options
-    match = buildMatch(registered_command.command, options.params);
+    var options = registered_command.options
+    var match = buildMatch(registered_command.command, options.params);
     var result = input.match(match);
-    callback(pass_through, result);
+    registered_command.options.callback(pass_through, result);
   } else {
     console.log("Couldn't process input, ${input}"); //Don't need to do anything if there's no match.
   }
 }
 
 Commands.prototype.checkRegistration = function(input) {
-  for(command of Object.keys(this.registered_commands)) { //get keys
+  for(var command of Object.keys(this.registered_commands)) { //get keys
      if (input.match(this.prefix + command)) { //compare key with input
-       return {command: command, options: registered_commands[command]}; // return the whole set.
+       return {command: command, options: this.registered_commands[command]}; // return the whole set.
      }
   }
   return null;

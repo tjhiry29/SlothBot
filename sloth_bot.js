@@ -23,8 +23,8 @@ process.on("unhandledRejection", (reason, promise) => {
 })
 
 bot.on("ready", () => {
-	commandHandler.prefix("-")
-					.register("play", {params: 1}, processPlayParameters);
+	commandHandler.setPrefix("-")
+								.register("play", {params: 1}, processPlayParameters);
 	console.log("I am ready!");
 });
 
