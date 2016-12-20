@@ -3,7 +3,6 @@
 // Then use 'on' to parse the input and return any params if necessary.
 
 // Options for now expects a params if available.
-// TODO: Optional parameters
 
 module.exports = Commands = function() {
   this.registered_commands = [];

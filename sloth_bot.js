@@ -114,7 +114,7 @@ function displayOrCheckVolume(message, parse) {
 	parse = parseInt(parse)
 	if (parse != null) {
 		volume = parse/100.0;
-		extra = currentVideo ? "" : " for the next video"
+		extra = currentVideo ? " for the next video" : ""
 		currentChannel.sendMessage("Set volume to " + volume*100.0 + extra);
 	}
 }
