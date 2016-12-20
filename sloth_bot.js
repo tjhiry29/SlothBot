@@ -3,7 +3,7 @@ const url = require("url");
 const YoutubeVideo = require("./youtube_video");
 const VideoSaver = require("./video_saver");
 const bot = new Discord.Client();
-const commandHandler = require("./commands");
+const commandHandler = require("./commands").new();
 const token = require("./config").getToken();
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 
