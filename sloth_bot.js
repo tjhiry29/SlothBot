@@ -15,6 +15,7 @@ var currentChannel = null;
 var currentVoiceChannel = null;
 var volume = 0.25; //Default to 1 quarter
 var registeredCommands = null;
+var commandHandler = commands.new();
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.log(reason);
@@ -22,7 +23,7 @@ process.on("unhandledRejection", (reason, promise) => {
 })
 
 bot.on("ready", () => {
-	commands.prefix("-")
+	commandHandler.prefix("-")
 					.register("play", {params: 1}, processPlayParameters);
 	console.log("I am ready!");
 });
@@ -39,7 +40,7 @@ bot.on("message", message => {
 	if (!checkGuildPermissions(message)) {
 		return;
 	}
-	commands.on(message.content, message); // Handle the -play commands.
+	commandHandler.on(message.content, message); // Handle the -play commands.
 	if (message.content == "-commands") {
 		currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
 	}

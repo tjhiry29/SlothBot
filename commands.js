@@ -4,9 +4,11 @@
 
 // Options for now expects a params if available.
 
-module.exports = Commands = function() {
+module.exports = Commands;
+
+Commands.new = function() {
   this.registered_commands = [];
-  this.prefix = "";
+  this.prefix = []''
 }
 
 Commands.prototype.prefix = function(prefix) {
