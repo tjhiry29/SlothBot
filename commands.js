@@ -8,7 +8,7 @@ module.exports = Commands;
 
 Commands.new = function() {
   this.registered_commands = [];
-  this.prefix = []''
+  this.prefix = "";
 }
 
 Commands.prototype.prefix = function(prefix) {
