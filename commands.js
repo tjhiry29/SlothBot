@@ -3,6 +3,7 @@
 // Then use 'on' to parse the input and return any params if necessary.
 
 // Options for now expects a params if available.
+// TODO: Optional parameters
 
 module.exports = Commands = function() {
   this.registered_commands = [];
@@ -20,8 +21,13 @@ Commands.prototype.on = function(input, pass_through) {
   var registered_command = this.checkRegistration(input); //Check to see if anything matches this input.
   if (registered_command != null) {
     var options = registered_command.options
-    var match = buildMatch(registered_command.command, options.params, this.prefix);
-    var result = input.match(match);
+    var result = null;
+    if (options.result) {
+      result = options.result
+    } else {
+      var match = buildMatch(registered_command.command, options.params, this.prefix);
+      result = input.match(match);
+    }
     registered_command.options.callback(pass_through, result);
   } else {
     console.log("Couldn't process input, ${input}"); //Don't need to do anything if there's no match.

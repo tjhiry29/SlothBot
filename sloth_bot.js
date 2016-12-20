@@ -24,7 +24,14 @@ process.on("unhandledRejection", (reason, promise) => {
 
 bot.on("ready", () => {
 	commandHandler.setPrefix("-")
-								.register("play", {params: 1}, processPlayParameters);
+								.register("play", {params: 1}, processPlayParameters)
+								.register("commands", {}, displayCommands)
+								.register("matt meme", {}, mattMeme).register("-mattmeme", {}, mattMeme)
+								.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processPlayParameters)
+								.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
+								.register("next", {}, next)
+								.register("stop", {}, stop)
+								.register("vol", {params: 1}, displayOrCheckVolume);
 	console.log("I am ready!");
 });
 
@@ -41,69 +48,24 @@ bot.on("message", message => {
 		return;
 	}
 	commandHandler.on(message.content, message); // Handle the -play commands.
-	if (message.content == "-commands") {
-		currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
-	}
-	if (message.content == "-matt meme" || message.content == "-mattmeme") {
-		currentChannel.sendMessage("I'm sure of what I said, but I'm not sure why I said it. - Matt")
-		//TODO: MP3 File.
-	}
-	if (message.content == "-mexican beep song") {
-		playYoutubeVideoFromUrl("https://www.youtube.com/watch?v=x47NYUbtYb0", message);
-	}
-	if (message.content == "-sexy sax man") {
-		playYoutubeVideoFromUrl("https://www.youtube.com/watch?v=GaoLU6zKaws", message);
-	}
-	if (message.content == "-next") {
-		if (!checkPermissions(message)){
-			return;
-		}
-		if (currentVideo != null && videoQueue.length > 0) {
-			stopCurrentVideo();
-		} else {
-			currentChannel.sendMessage("There's no next video");
-		}
-	}
-	if (message.content == "-stop") {
-		if (!checkPermissions(message)){
-			return;
-		}
-		if (currentVideo != null) {
-			stopCurrentVideo();
-		} else {
-			currentChannel.sendMessage("There's currently no video being played");
-		}
-	}
-	if (message.content.includes('-vol')) {
-		if (!checkPermissions(message)){
-			return;
-		}
-		var parse = message.content.match(/-vol (.+)/);
-		if (parse != null) {
-			parse = parse[1];
-		} else {
-			currentChannel.sendMessage("The current volume is " + volume*100.0);
-			return;
-		}
-		parse = parseInt(parse)
-		if (parse != null) {
-			parse = parse/100.0; // User's input on a scale of 100-0, Discord uses 1-0
-			volume = parse;
-			if (currentVideo != null) {
-				currentChannel.sendMessage("Set volume to " + parse*100.0 + " for the next video");
-			} else {
-				currentChannel.sendMessage("Set volume to " + parse*100.0);
-			}
-		}
-	}
 });
+
+function mattMeme(message) {
+	currentChannel.sendMessage("I'm sure of what I said, but I'm not sure why I said it. - Matt")
+}
+
+function displayCommands(message) {
+	currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
+}
 
 function processPlayParameters(message, parse) {
 	if (parse == null || parse.length == 0) {
 		handleError("There was an error with the parse:" + parse);
 		return;
 	}
-	parse = parse[1]; //get the result
+	if (typeof parse != 'string') { //we can be passed a string
+		parse = parse[1]; //get the result
+	}
 	if (parse.match(regex)){
 		playYoutubeVideoFromUrl(parse, message);
 	} else {
@@ -117,6 +79,45 @@ function processPlayParameters(message, parse) {
 	}
 }
 
+function next(message) {
+	if (!checkPermissions(message)){
+		return;
+	}
+	if (currentVideo != null && videoQueue.length > 0) {
+		stopCurrentVideo();
+	} else {
+		currentChannel.sendMessage("There's no next video");
+	}
+}
+
+function stop(message) {
+	if (!checkPermissions(message)){
+		return;
+	}
+	if (currentVideo != null) {
+		stopCurrentVideo();
+	} else {
+		currentChannel.sendMessage("There's currently no video being played");
+	}
+}
+
+function displayOrCheckVolume(message, parse) {
+	if (!checkPermissions(message)){
+		return;
+	}
+	if (parse && typeof parse != 'string' && parse.length != 0) {
+		parse = parse[1];
+	} else {
+		currentChannel.sendMessage("The current volume is " + volume*100.0);
+		return;
+	}
+	parse = parseInt(parse)
+	if (parse != null) {
+		volume = parse/100.0;
+		extra = currentVideo ? "" : " for the next video"
+		currentChannel.sendMessage("Set volume to " + volume*100.0 + extra);
+	}
+}
 
 function checkGuildPermissions(message) {
 	if (!message.guild.roles.find("name", "SlothMaster")) {
