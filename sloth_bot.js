@@ -23,7 +23,7 @@ process.on("unhandledRejection", (reason, promise) => {
 
 bot.on("ready", () => {
 	commands.prefix("-")
-					.register("play", {}, processPlayParameters)
+					.register("play", {params: 1}, processPlayParameters);
 	console.log("I am ready!");
 });
 
@@ -39,6 +39,7 @@ bot.on("message", message => {
 	if (!checkGuildPermissions(message)) {
 		return;
 	}
+	commands.on(message.content, message); // Handle the -play commands.
 	if (message.content == "-commands") {
 		currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
 	}
@@ -94,21 +95,36 @@ bot.on("message", message => {
 			}
 		}
 	}
-	if (message.content.match(/^-play/)) { //play youtubelink
-		var parse = message.content.match(/-play (.+)/)[1];
-		if (parse.match(regex)){
-			playYoutubeVideoFromUrl(parse, message);
-		} else {
-			var result = YoutubeVideo.search(parse, (err, vid) => {;
-				if (err) {
-					bot.handleError(err);
-				} else {
-					queueVideo(vid, message); // Already got the video id
-				}
-			});
-		}
-	}
+	// if (message.content.match(/^-play/)) { //play youtubelink
+	// 	var parse = message.content.match(/-play (.+)/)[1];
+	// 	if (parse.match(regex)){
+	// 		playYoutubeVideoFromUrl(parse, message);
+	// 	} else {
+	// 		var result = YoutubeVideo.search(parse, (err, vid) => {;
+	// 			if (err) {
+	// 				bot.handleError(err);
+	// 			} else {
+	// 				queueVideo(vid, message); // Already got the video id
+	// 			}
+	// 		});
+	// 	}
+	// }
 });
+
+function processPlayParameters(message){
+	var parse = message.content.match(/-play (.+)/)[1];
+	if (parse.match(regex)){
+		playYoutubeVideoFromUrl(parse, message);
+	} else {
+		var result = YoutubeVideo.search(parse, (err, vid) => {;
+			if (err) {
+				bot.handleError(err);
+			} else {
+				queueVideo(vid, message); // Already got the video id
+			}
+		});
+	}
+}
 
 function checkGuildPermissions(message) {
 	if (!message.guild.roles.find("name", "SlothMaster")) {
