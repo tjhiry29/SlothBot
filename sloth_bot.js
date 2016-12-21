@@ -7,6 +7,7 @@ const commands = require("./commands");
 const config = require("./config");
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 
+let token = '';
 var videoQueue = [];
 var currentStream = null;
 var currentVideo = null;
@@ -28,9 +29,11 @@ bot.on("ready", () => {
 			var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
 			if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
 				config.setToken(result[1]);
+				token = config.getToken();
 			}
 			if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
 				config.setYoutubeApiKey(result[1]);
+				YoutubeVideo.setYoutubeApiKey(result[1]);
 			}
 		}
 	});
