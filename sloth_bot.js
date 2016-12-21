@@ -23,7 +23,6 @@ process.argv.forEach(function (val, index, array) {
 	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
 		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
 		if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
-			console.log(result[2])
 			config.setToken(result[2]);
 			token = config.getToken();
 		}
