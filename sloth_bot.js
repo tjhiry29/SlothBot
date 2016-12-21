@@ -4,7 +4,7 @@ const YoutubeVideo = require("./youtube_video");
 const VideoSaver = require("./video_saver");
 const bot = new Discord.Client();
 const commands = require("./commands");
-const token = require("./config").getToken();
+const config = require("./config");
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 
 var videoQueue = [];
@@ -23,15 +23,25 @@ process.on("unhandledRejection", (reason, promise) => {
 })
 
 bot.on("ready", () => {
+	process.argv.forEach(function (val, index, array) {
+		if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
+			if (var result = val.match("DISCORD_API_KEY=(.+)")) {
+				config.setToken(result[1]);
+			}
+			if (var result = val.match("YOUTUBE_API_KEY=(.+)")) {
+				config.setYoutubeApiKey(result[1]);
+			}
+		}
+	});
 	commandHandler.setPrefix("-")
-								.register("play", {params: 1}, processPlayParameters)
-								.register("commands", {}, displayCommands)
-								.register("matt meme", {}, mattMeme).register("-mattmeme", {}, mattMeme)
-								.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processPlayParameters)
-								.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
-								.register("next", {}, next)
-								.register("stop", {}, stop)
-								.register("vol", {params: 1}, displayOrCheckVolume);
+				.register("play", {params: 1}, processPlayParameters)
+				.register("commands", {}, displayCommands)
+				.register("matt meme", {}, mattMeme).register("-mattmeme", {}, mattMeme)
+				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processPlayParameters)
+				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
+				.register("next", {}, next)
+				.register("stop", {}, stop)
+				.register("vol", {params: 1}, displayOrCheckVolume);
 	console.log("I am ready!");
 });
 

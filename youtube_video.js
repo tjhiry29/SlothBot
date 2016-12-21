@@ -4,14 +4,18 @@ const request = require("superagent");
 const youtube_url = "http://www.youtube.com/watch?v="
 const youtube_api_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
 const youtube_api_path = ""
-const youtube_api_key = require("./config").getYoutubeKey();
-
+const config = require("./config");
+let youtube_api_key = "";
 
 module.exports = YoutubeVideo = function(video, info) {
   this.video = video;
   this.title = info.title;
   this.author = info.author;
   this.lengthSeconds = info.lengthSeconds || info.length_seconds;
+}
+
+YoutubeVideo.setYoutubeApiKey = function(key) {
+  youtube_api_key = key;
 }
 
 YoutubeVideo.getVideo = function(vid, m, callBack) {

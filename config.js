@@ -1,12 +1,20 @@
-const token = "MjUwNDIyMDcyOTkwMjM2Njcy.CxvKIw.YtWMKpNyCnn5yAmVXuFwCPcecCc";
-const youtube_api_key = "AIzaSyCu6aMb3rUs-un76l-USc4GfflqyJhkNNY";
+let discord_token = "";
+let youtube_api_key = "";
+
+exports.setYoutubeApiKey = function(key) {
+    youtube_api_key = key;
+}
+
+exports.setToken = function(token) {
+    discord_token = token;
+}
 
 exports.getToken = function() {
-    return token;
+    return discord_token;
 }
 
 exports.getYoutubeKey = function() {
-  return youtube_api_key;
+    return youtube_api_key;
 }
 
 module.exports = exports;
