@@ -29,7 +29,7 @@ bot.on("ready", () => {
 			if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
 				config.setToken(result[1]);
 			}
-			if (var result = val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
+			if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
 				config.setYoutubeApiKey(result[1]);
 			}
 		}
