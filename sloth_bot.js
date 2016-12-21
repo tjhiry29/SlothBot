@@ -51,7 +51,8 @@ bot.on("ready", () => {
 				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
 				.register("next", {}, next)
 				.register("stop", {}, stop)
-				.register("vol", {params: 1}, displayOrCheckVolume);
+				.register("vol", {params: 1}, displayOrCheckVolume)
+				.register("volume", {params: 1}, displayOrCheckVolume);
 	console.log("I am ready!");
 });
 

@@ -36,7 +36,7 @@ Commands.prototype.on = function(input, pass_through) {
 
 Commands.prototype.checkRegistration = function(input) {
   for(var command of Object.keys(this.registered_commands)) {
-     if (input.match(this.prefix + command)) {
+     if (input.match("\\b" + command + "\\b")) {
        return this.registered_commands[command];
      }
   }
