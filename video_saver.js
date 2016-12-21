@@ -34,7 +34,7 @@ exports.retrieveVideo = function(video_query) {
     if (video == null || video.length == 0) {
         return null;
     } else {
-        return video;
+        return video[0]; //return first element.
     }
 }
 
