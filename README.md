@@ -4,9 +4,7 @@ Discord Bot that plays Youtube Videos.
 Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 
 # TODO:
-- User Permissions
 - Set up a server.
-- Find a better way to load up your discord token. (I'm sure a JSON object is way better.)
 
 # Potential Upcoming Features:
 - Maybe set up an esports live updater (That's going to be hard and lots of work)
@@ -27,3 +25,4 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 - `-stop` stops the current video and moves to the next if any.
 - `-next` stops the current video and moves to the next if any.
 - `-vol (volume or empty)` has one optional argument. If an argument is passed and is valid it sets the volume. Otherwise it prints the volume.
+- Some fun hidden commands :D

@@ -79,26 +79,68 @@ function displayCommands(message) {
 	currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
 }
 
-function processPlayParameters(message, parse) {
-	if (parse == null || parse.length == 0) {
-		handleError("There was an error with the parse:" + parse);
+function checkGuildPermissions(message) {
+	if (!message.guild.roles.find("name", "SlothMaster")) {
+		currentChannel.guild.createRole({name: "SlothMaster"})
+										.then(role => {
+											currentChannel.sendMessage("There is no SlothMaster in this channel. The role will be made");
+											console.log("Created role: " + role)
+										}, error => {
+											currentChannel.sendMessage("There was an error with creating the role, will now try to add role.")
+										})
+										.catch(console.error);
+	}
+	return true;
+}
+
+function checkPermissions(message) {
+	var member = message.channel.guild.members.find("id", message.author.id)
+	var has_permission = member && member.roles && member.roles.find("name", "SlothMaster");
+	if (!has_permission) {
+		currentChannel.sendMessage(message.author.username + " you do not have permission to perform this command: " + message.content);
+	}
+	return has_permission;
+}
+
+function displayOrCheckVolume(message, parse) {
+	if (!checkPermissions(message)){
 		return;
 	}
-	if (typeof parse != 'string') { //we can be passed a string
-		parse = parse[1]; //get the result
-	}
-	if (parse.match(regex)){
-		playYoutubeVideoFromUrl(parse, message);
+	if (parse && typeof parse != 'string' && parse.length != 0) {
+		parse = parse[1];
 	} else {
-		var result = YoutubeVideo.search(parse, (err, vid) => {
-			if (err) {
-				bot.handleError(err);
-			} else {
-				queueVideo(vid, message); // Already got the video id
-			}
-		});
+		currentChannel.sendMessage("The current volume is " + volume*100.0);
+		return;
+	}
+	parse = parseInt(parse)
+	if (parse != null) {
+		volume = parse/100.0;
+		extra = currentVideo ? " for the next video" : ""
+		currentChannel.sendMessage("Set volume to " + volume*100.0 + extra);
 	}
 }
+
+function findVoiceChannel(m) {
+	var guild = m.channel.guild;
+	var members = guild.members;
+	for (var channel of guild.channels) {
+		channel = channel[1];
+		if (channel.type == "voice"){
+			var member = channel.members.find("id", m.author.id);
+			if (member) {
+				currentVoiceChannel = channel;
+				break;
+			}
+		}
+	}
+}
+
+function handleError(err) {
+	console.log("Error! " + err);
+	currentChannel.sendMessage("There was an error!");
+}
+
+// Video player controls
 
 function next(message) {
 	if (!checkPermissions(message)){
@@ -122,46 +164,31 @@ function stop(message) {
 	}
 }
 
-function displayOrCheckVolume(message, parse) {
-	if (!checkPermissions(message)){
+
+//////////////////////////////////////////
+// Code for playing youtube videos.
+//////////////////////////////////////////
+function processPlayParameters(message, parse) {
+	if (parse == null || parse.length == 0) {
+		handleError("There was an error with the parse:" + parse);
 		return;
 	}
-	if (parse && typeof parse != 'string' && parse.length != 0) {
-		parse = parse[1];
+	if (typeof parse != 'string') { //we can be passed a string
+		parse = parse[1]; //get the result
+	}
+	if (parse.match(regex)){
+		playYoutubeVideoFromUrl(parse, message);
 	} else {
-		currentChannel.sendMessage("The current volume is " + volume*100.0);
-		return;
-	}
-	parse = parseInt(parse)
-	if (parse != null) {
-		volume = parse/100.0;
-		extra = currentVideo ? " for the next video" : ""
-		currentChannel.sendMessage("Set volume to " + volume*100.0 + extra);
+		var result = YoutubeVideo.search(parse, (err, vid) => {
+			if (err) {
+				bot.handleError(err);
+			} else {
+				queueVideo(vid, message); // Already got the video id
+			}
+		});
 	}
 }
 
-function checkGuildPermissions(message) {
-	if (!message.guild.roles.find("name", "SlothMaster")) {
-		currentChannel.guild.createRole({name: "SlothMaster"})
-												.then(role => {
-													currentChannel.sendMessage("There is no SlothMaster in this channel. The role will be made");
-													console.log("Created role: " + role)
-												}, error => {
-													currentChannel.sendMessage("There was an error with creating the role, will now try to add role.")
-												})
-												.catch(console.error);
-	}
-	return true;
-}
-
-function checkPermissions(message) {
-	var member = message.channel.guild.members.find("id", message.author.id)
-	var has_permission = member && member.roles && member.roles.find("name", "SlothMaster");
-	if (!has_permission) {
-		currentChannel.sendMessage(message.author.username + " you do not have permission to perform this command: " + message.content);
-	}
-	return has_permission;
-}
 
 function playYoutubeVideoFromUrl(url, message) {
 	var video_query = parseYoutubeUrl(url);
@@ -198,11 +225,6 @@ function queueVideo(video_query, m) {
 			}
 		});
 	}
-}
-
-function handleError(err) {
-	console.log("Error! " + err);
-	currentChannel.sendMessage("There was an error!");
 }
 
 function parseYoutubeUrl(video_url) {
@@ -250,21 +272,6 @@ function stopCurrentVideo() {
 
 	currentVideo = null;
 	nextInQueue();
-}
-
-function findVoiceChannel(m) {
-	var guild = m.channel.guild;
-	var members = guild.members;
-	for (var channel of guild.channels) {
-		channel = channel[1];
-		if (channel.type == "voice"){
-			var member = channel.members.find("id", m.author.id);
-			if (member) {
-				currentVoiceChannel = channel;
-				break;
-			}
-		}
-	}
 }
 
 bot.login(token);
