@@ -18,25 +18,27 @@ var volume = 0.25; //Default to 1 quarter
 var registeredCommands = null;
 var commandHandler = new Commands();
 
+
+process.argv.forEach(function (val, index, array) {
+	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
+		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
+		if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
+			config.setToken(result[1]);
+			token = config.getToken();
+		}
+		if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
+			config.setYoutubeApiKey(result[1]);
+			YoutubeVideo.setYoutubeApiKey(result[1]);
+		}
+	}
+});
+
 process.on("unhandledRejection", (reason, promise) => {
 	console.log(reason);
 	console.log(promise);
-})
+});
 
 bot.on("ready", () => {
-	process.argv.forEach(function (val, index, array) {
-		if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
-			var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
-			if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
-				config.setToken(result[1]);
-				token = config.getToken();
-			}
-			if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
-				config.setYoutubeApiKey(result[1]);
-				YoutubeVideo.setYoutubeApiKey(result[1]);
-			}
-		}
-	});
 	commandHandler.setPrefix("-")
 				.register("play", {params: 1}, processPlayParameters)
 				.register("commands", {}, displayCommands)
