@@ -187,6 +187,7 @@ function queueVideo(video_query, m) {
 				handleError(err);
 				return;
 			} else {
+				VideoSaver.save(video);
 				videoQueue.push(video);
 				// Start playing if no video.
 				if (currentVideo == null){
