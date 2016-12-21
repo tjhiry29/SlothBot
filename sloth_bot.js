@@ -7,7 +7,7 @@ const commands = require("./commands");
 const config = require("./config");
 const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 
-let token = '';
+let token = null;
 var videoQueue = [];
 var currentStream = null;
 var currentVideo = null;
@@ -18,20 +18,25 @@ var volume = 0.25; //Default to 1 quarter
 var registeredCommands = null;
 var commandHandler = new Commands();
 
-
+// Grab the arguments
 process.argv.forEach(function (val, index, array) {
 	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
 		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
 		if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
-			config.setToken(result[1]);
+			console.log(result[2])
+			config.setToken(result[2]);
 			token = config.getToken();
 		}
 		if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
-			config.setYoutubeApiKey(result[1]);
-			YoutubeVideo.setYoutubeApiKey(result[1]);
+			config.setYoutubeApiKey(result[2]);
+			YoutubeVideo.setYoutubeApiKey(result[2]);
 		}
 	}
 });
+
+if (token == null) {
+	console.log("ERROR! NO TOKEN PROVIDED");
+}
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.log(reason);
