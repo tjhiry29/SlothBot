@@ -12,6 +12,7 @@ module.exports = YoutubeVideo = function(video, info) {
   this.title = info.title;
   this.author = info.author;
   this.lengthSeconds = info.lengthSeconds || info.length_seconds;
+  this.info = info;
 }
 
 YoutubeVideo.setYoutubeApiKey = function(key) {
@@ -27,7 +28,6 @@ YoutubeVideo.getVideo = function(vid, m, callBack) {
     else {
       var video = new YoutubeVideo(vid, info);
       video.userId = m.author.id;
-      video.containedVideo = info;
       callBack(undefined, video);
     }
   });
@@ -60,19 +60,11 @@ YoutubeVideo.prototype.print = function () {
   return this.title + ' by ' + this.author;
 }
 
-YoutubeVideo.prototype.saveable = function () {
-  return {
-    vid: this.vid,
-    title: this.title,
-    author: this.author
-  }
-}
-
 YoutubeVideo.prototype.getStream = function() {
   var options = {
       filter: (format) => format.container === "mp4",
       quality: "lowest",
   };
 
-  return ytdl.downloadFromInfo(this.containedVideo, options);
+  return ytdl.downloadFromInfo(this.info, options);
 }
