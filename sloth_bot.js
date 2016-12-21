@@ -25,10 +25,11 @@ process.on("unhandledRejection", (reason, promise) => {
 bot.on("ready", () => {
 	process.argv.forEach(function (val, index, array) {
 		if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
-			if (var result = val.match("DISCORD_API_KEY=(.+)")) {
+			var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
+			if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
 				config.setToken(result[1]);
 			}
-			if (var result = val.match("YOUTUBE_API_KEY=(.+)")) {
+			if (var result = val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
 				config.setYoutubeApiKey(result[1]);
 			}
 		}
