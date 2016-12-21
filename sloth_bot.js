@@ -34,7 +34,7 @@ process.argv.forEach(function (val, index, array) {
 });
 
 if (token == null) {
-	console.log("ERROR! NO TOKEN PROVIDED");
+	console.log("ERROR! NO DISCORD TOKEN PROVIDED");
 }
 
 process.on("unhandledRejection", (reason, promise) => {

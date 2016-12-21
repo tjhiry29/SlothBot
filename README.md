@@ -17,20 +17,8 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 - Install node-opus first. `npm install node-opus` There are probably going to be a bunch of issues, especially on Windows.
 - Install ffmpeg with `sudo apt-get install ffmpeg` or [here](ffmpeg.zeranoe.com/builds/)
 - Make sure you have npm installed, and run `npm install`
-- Put your discord token into a file called config.js.
-    The contents should look a little something like this.
-```
-const token = "...";
-const youtube_api_key = "...";
-exports.getToken = function() {
-    return token;
-}
-exports.getYoutubeKey = function() {
-    return youtube_api_key;
-}
-module.exports = exports;
-```
-- To run the bot run `npm start`
+- To run the bot run `npm start DISCORD_API_KEY='...' YOUTUBE_API_KEY='...'`
+	- You don't need the youtube api key for now (you can't search youtube videos though), but you do need the discord api key. (For obvious reasons)
 
 # Commands:
 - `-commmands` displays a list of commands.

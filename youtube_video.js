@@ -5,7 +5,7 @@ const youtube_url = "http://www.youtube.com/watch?v="
 const youtube_api_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
 const youtube_api_path = ""
 const config = require("./config");
-let youtube_api_key = "";
+let youtube_api_key = null;
 
 module.exports = YoutubeVideo = function(video, info) {
   this.video = video;
@@ -34,6 +34,10 @@ YoutubeVideo.getVideo = function(vid, m, callBack) {
 };
 
 YoutubeVideo.search = function(query, callback) {
+  if (youtube_api_key == null) {
+    callback("No youtube api key provided", undefined);
+    return;
+  }
   request(youtube_api_url + query + "&key=" + youtube_api_key, (error, response) => {
     if (!error && response.statusCode == 200) {
       var body = response.body;
