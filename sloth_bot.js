@@ -21,8 +21,8 @@ var commandHandler = new Commands();
 
 // Grab the arguments
 process.argv.forEach(function (val, index, array) {
-	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY|SOUND_CLOUD_CLIENT_ID)")) {
-		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY|SOUND_CLOUD_CLIENT_ID)=(.+)");
+	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
+		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
 		if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
 			config.setToken(result[2]);
 			token = config.getToken();
@@ -30,10 +30,6 @@ process.argv.forEach(function (val, index, array) {
 		if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
 			config.setYoutubeApiKey(result[2]);
 			YoutubeVideo.setYoutubeApiKey(result[2]);
-		}
-		if (val.match("SOUND_CLOUD_CLIENT_ID=(.+)")) {
-			config.setSoundCloudClientId(result[2]);
-			SoundcloudTrack.setSoundCloudClientId(result[2]);
 		}
 	}
 });

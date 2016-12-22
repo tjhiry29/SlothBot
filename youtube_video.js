@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('youtube-dl');
 const url = require("url");
 const request = require("superagent");
 const youtube_url = "http://www.youtube.com/watch?v="
