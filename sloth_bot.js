@@ -76,7 +76,7 @@ function mattMeme(message) {
 }
 
 function displayCommands(message) {
-	currentChannel.sendMessage("**Commands** \n -play 'youtubelink' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
+	currentChannel.sendMessage("**Commands** \n -play 'url' \n -next play the next video in queue if any. \n -stop stop the current video \n -vol 'vol' set the volume \n -vol print out the volume.")
 }
 
 function checkGuildPermissions(message) {

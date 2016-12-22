@@ -20,8 +20,8 @@ Using [Lethe.js](https://github.com/meew0/Lethe) as assistance for this project.
 
 # Commands:
 - `-commmands` displays a list of commands.
-- `-play 'youtubelink or query'` Will queue video and play if the queue is empty.
-    - Ensure that the `youtubelink` looks something like:  https://youtube.com/watch?v=x where 'x' is the video code.
+- `-play 'url or query'` Will queue video and play if the queue is empty.
+    - Ensure that the url is supported by [youtube-dl](https://rg3.github.io/youtube-dl/supportedsites.html)
 - `-stop` stops the current video and moves to the next if any.
 - `-next` stops the current video and moves to the next if any.
 - `-vol (volume or empty)` has one optional argument. If an argument is passed and is valid it sets the volume. Otherwise it prints the volume.
