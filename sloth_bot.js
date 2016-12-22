@@ -180,8 +180,12 @@ function processPlayParameters(message, parse) {
 		parse = parse[parse.length - 1]
 	}
 	if (parse.match(url_regex)) { //we were passed a url (any url)
-		//Video saver stuff. (check matching urls);
-		YoutubeVideo.getVideo(parse, message, queueVideo);
+		var video = VideoSaver.retrieveVideo(parse);
+		if (video != null) {
+			queueVideo(undefined, video, message);
+		} else {
+			YoutubeVideo.getVideo(parse, message, queueVideo);
+		}
 	} else { // We were passed a search query.
 		YoutubeVideo.search(parse, (err, video_id) => {
 			if (err) {
@@ -199,6 +203,7 @@ function queueVideo(err, video, message) {
 		handleError(err);
 		return;
 	} else {
+		VideoSaver.save(video);
 		videoQueue.push(video);
 		if (currentVideo == null) {
 			nextInQueue();
