@@ -46,14 +46,14 @@ process.on("unhandledRejection", (reason, promise) => {
 bot.on("ready", () => {
 	commandHandler.setPrefix("-")
 				// If the yt or sc is forgotten, default to youtube
-				.register("play (yt|youtube)|(.+)", {params: 1}, processYoutubeParameters)
+				.register("play (yt|youtube)?", {params: 1}, processYoutubeParameters)
 				.register("commands", {}, displayCommands)
 				.register("(matt meme|mattmeme)", {}, mattMeme)
 				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processYoutubeParameters)
 				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processYoutubeParameters)
 				.register("next", {}, next)
 				.register("stop", {}, stop)
-				.register("(vol|volume)", {params: 1}, displayOrCheckVolume);
+				.register("(volume|vol)", {params: 1}, displayOrCheckVolume);
 	console.log("I am ready!");
 });
 
