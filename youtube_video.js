@@ -64,11 +64,8 @@ YoutubeVideo.prototype.print = function () {
 }
 
 YoutubeVideo.prototype.getStream = function() {
-  var options = {
-      filter: (format) => format.container === "mp4",
-      quality: "lowest",
-  };
-
+  var format = ["--format=bestaudio"]
+  return ytdl(info.webpage_url, format, {start: 0}) //returns a stream.
 }
 
 YoutubeVideo.downloadVideo = function(info, options) {
