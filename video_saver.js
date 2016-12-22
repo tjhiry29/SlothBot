@@ -18,12 +18,13 @@ function setUpCollection() {
     }
 };
 
-exports.save = function(video) {
+exports.save = function(url) {
     if (videos == null) {
         setUpCollection();
     }
-
-    videos.insert(video);
+    if (this.retrieveVideo(url) == null) {
+        videos.insert(url);
+    }
 };
 
 exports.retrieveVideo = function(url) {
