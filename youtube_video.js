@@ -17,7 +17,7 @@ YoutubeVideo.setYoutubeApiKey = function(key) {
   youtube_api_key = key;
 }
 
-YoutubeVideo.getVideoFromId = function(video_id, m, callback) {
+YoutubeVideo.getVideoFromId = function(video_id, m, callBack) {
   let requestUrl = youtube_url + video_id;
   this.getVideo(requestUrl, m, callBack);
 }
