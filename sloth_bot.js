@@ -49,7 +49,8 @@ process.on("unhandledRejection", (reason, promise) => {
 
 bot.on("ready", () => {
 	commandHandler.setPrefix("-")
-				.register("play (yt|youtube)", {params: 1}, processYoutubeParameters)
+				// If the yt or sc is forgotten, default to youtube
+				.register("play (yt|youtube)|(.+)", {params: 1}, processYoutubeParameters)
 				.register("play (sc|soundcloud)", {params: 1}, processSoundCloudParameters)
 				.register("commands", {}, displayCommands)
 				.register("(matt meme|mattmeme)", {}, mattMeme)
