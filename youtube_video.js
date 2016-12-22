@@ -17,19 +17,19 @@ YoutubeVideo.setYoutubeApiKey = function(key) {
   youtube_api_key = key;
 }
 
-YoutubeVideo.getVideoFromId = function(video_id, m, callBack) {
+YoutubeVideo.getVideoFromId = function(video_id, pass_through, callBack) {
   let requestUrl = youtube_url + video_id;
-  this.getVideo(requestUrl, m, callBack);
+  this.getVideo(requestUrl, pass_through, callBack);
 }
 
-YoutubeVideo.getVideo = function(url, m, callBack) {
+YoutubeVideo.getVideo = function(url, pass_through, callBack) {
   ytdl.getInfo(url, (err, info) => {
     if (err){
-      callBack(err, undefined, m);
+      callBack(err, undefined, pass_through);
     }
     else {
       var video = new YoutubeVideo(info);
-      callBack(undefined, video, m);
+      callBack(undefined, video, pass_through);
     }
   });
 };
