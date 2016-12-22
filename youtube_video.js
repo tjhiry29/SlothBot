@@ -63,8 +63,8 @@ YoutubeVideo.prototype.print = function () {
 
 YoutubeVideo.prototype.getStream = function() {
   var options = ["--format=bestaudio"]
-  console.log(this.webpage_url);
-  var video = ytdl(this.webpage_url, options, {});
-  console.log(video);
-  return video;
+  if (this.info.webpage_url) {
+    var video = ytdl(this.info.webpage_url, options, {});
+    return video;
+  }
 }

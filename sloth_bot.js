@@ -181,7 +181,7 @@ function processYoutubeParameters(message, parse) {
 	} else {
 		var result = YoutubeVideo.search(parse, (err, vid) => {
 			if (err) {
-				bot.handleError(err);
+				handleError(err);
 			} else {
 				queueVideo(vid, message); // Already got the video id
 			}
@@ -192,7 +192,7 @@ function processYoutubeParameters(message, parse) {
 function playYoutubeVideoFromUrl(url, message) {
 	var video_query = parseYoutubeUrl(url);
 	if(video_query == null) {
-		bot.handleError("There was an error with parsing this url");
+		handleError("There was an error with parsing this url");
 		return;
 	}
 	queueVideo(video_query, message);
