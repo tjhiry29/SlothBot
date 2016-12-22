@@ -8,11 +8,8 @@ const youtube_api_url = "https://www.googleapis.com/youtube/v3/search?part=snipp
 const youtube_api_path = ""
 let youtube_api_key = null;
 
-module.exports = YoutubeVideo = function(video, info) {
-  this.video = video;
-  this.title = info.title;
-  this.author = info.author;
-  this.lengthSeconds = info.lengthSeconds || info.length_seconds;
+module.exports = YoutubeVideo = function(info) {
+  this.webpage_url = info.webpage_url
   this.info = info;
 }
 
@@ -20,16 +17,19 @@ YoutubeVideo.setYoutubeApiKey = function(key) {
   youtube_api_key = key;
 }
 
-YoutubeVideo.getVideo = function(vid, m, callBack) {
-  let requestUrl = youtube_url + vid;
-  ytdl.getInfo(requestUrl, (err, info) => {
+YoutubeVideo.getVideoFromId = function(video_id, m, callback) {
+  let requestUrl = youtube_url + video_id;
+  this.getVideo(requestUrl, m, callBack);
+}
+
+YoutubeVideo.getVideo = function(url, m, callBack) {
+  ytdl.getInfo(url, (err, info) => {
     if (err){
-      callBack(err, undefined);
+      callBack(err, undefined, m);
     }
     else {
-      var video = new YoutubeVideo(vid, info);
-      video.userId = m.author.id;
-      callBack(undefined, video);
+      var video = new YoutubeVideo(info);
+      callBack(undefined, video, m);
     }
   });
 };
@@ -58,13 +58,14 @@ YoutubeVideo.search = function(query, callback) {
 };
 
 YoutubeVideo.prototype.print = function () {
-  return this.title + ' by ' + this.author;
+  // Nothing for now.
+  return this.webpage_url;
 }
 
 YoutubeVideo.prototype.getStream = function() {
   var options = ["--format=bestaudio"]
-  if (this.info.webpage_url) {
-    var video = ytdl(this.info.webpage_url, options, {});
+  if (this.webpage_url) {
+    var video = ytdl(this.webpage_url, options, {});
     return video;
   }
 }

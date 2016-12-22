@@ -8,6 +8,8 @@ const commands = require("./commands");
 const config = require("./config");
 
 const youtube_regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
+const soundcloud_regex = /https(?:s?):\/\/(?:www\.)?soundcloud.com/
+const url_regex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/
 var token = null;
 var videoQueue = [];
 var currentStream = null;
@@ -46,11 +48,11 @@ process.on("unhandledRejection", (reason, promise) => {
 bot.on("ready", () => {
 	commandHandler.setPrefix("-")
 				// If the yt or sc is forgotten, default to youtube
-				.register("play (yt|youtube)?", {params: 1}, processYoutubeParameters)
+				.register("play (yt|youtube)?", {params: 1}, processPlayParameters)
 				.register("commands", {}, displayCommands)
 				.register("(matt meme|mattmeme)", {}, mattMeme)
-				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processYoutubeParameters)
-				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processYoutubeParameters)
+				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processPlayParameters)
+				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
 				.register("next", {}, next)
 				.register("stop", {}, stop)
 				.register("(volume|vol)", {params: 1}, displayOrCheckVolume);
@@ -168,70 +170,43 @@ function stop(message) {
 //////////////////////////////////////////
 // Code for playing youtube videos.
 //////////////////////////////////////////
-function processYoutubeParameters(message, parse) {
+
+function processPlayParameters(message, parse) {
 	if (parse == null || parse.length == 0) {
-		handleError("There was an error with the parse:" + parse);
+		handleError("There was an error with the parse: " + parse);
 		return;
+	} 
+	if (typeof parse != 'string') {
+		parse = parse[parse.length - 1]
 	}
-	if (typeof parse != 'string') { //we can be passed a string
-		parse = parse[parse.length - 1]; //get the result. should always be the last one.
-	}
-	if (parse.match(youtube_regex)){
-		playYoutubeVideoFromUrl(parse, message);
-	} else {
-		var result = YoutubeVideo.search(parse, (err, vid) => {
+	if (parse.match(url_regex)) { //we were passed a url (any url)
+		//Video saver stuff. (check matching urls);
+		YoutubeVideo.getVideo(parse, message, queueVideo);
+	} else { // We were passed a search query.
+		YoutubeVideo.search(parse, (err, video_id) => {
 			if (err) {
 				handleError(err);
 			} else {
-				queueVideo(vid, message); // Already got the video id
+				YoutubeVideo.getVideoFromId(video_id, message, queueVideo)
 			}
 		});
 	}
 }
 
-function playYoutubeVideoFromUrl(url, message) {
-	var video_query = parseYoutubeUrl(url);
-	if(video_query == null) {
-		handleError("There was an error with parsing this url");
+function queueVideo(err, video, message) {
+	//Video saver stuff.
+	if (err) {
+		handleError(err);
 		return;
-	}
-	queueVideo(video_query, message);
-}
-
-function queueVideo(video_query, m) {
-	var video = VideoSaver.retrieveVideo(video_query);
-	if (video != null) {
+	} else {
 		videoQueue.push(video);
-		if (currentVideo == null){
+		if (currentVideo == null) {
 			nextInQueue();
 		} else {
-			currentChannel.sendMessage("Video was queued " + video.print() + " queued by: " + m.author.username);
+			currentChannel.sendMessage("Video was queued " + video.print() + " queued by " + m.author.username)
 		}
-	} else {
-		YoutubeVideo.getVideo(video_query, m, (err, video) => {
-			if (err) {
-				handleError(err);
-				return;
-			} else {
-				VideoSaver.save(video);
-				videoQueue.push(video);
-				// Start playing if no video.
-				if (currentVideo == null){
-					nextInQueue();
-				} else {
-					currentChannel.sendMessage("Video was queued " + video.print() + " queued by: " + m.author.username);
-				}
-			}
-		});
 	}
-}
-
-function parseYoutubeUrl(video_url) {
-	video_url = video_url.trim();
-	var parsed = url.parse(video_url, true);
-	if (parsed.query.v) return parsed.query.v;
-	return null; //Error case.
-}
+} 
 
 function nextInQueue() {
 	if (videoQueue.length > 0) {
