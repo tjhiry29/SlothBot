@@ -166,11 +166,6 @@ function stop(message) {
 	}
 }
 
-
-function processSoundCloudParameters(message, parse) {
-
-}
-
 //////////////////////////////////////////
 // Code for playing youtube videos.
 //////////////////////////////////////////
@@ -195,11 +190,10 @@ function processYoutubeParameters(message, parse) {
 	}
 }
 
-
 function playYoutubeVideoFromUrl(url, message) {
 	var video_query = parseYoutubeUrl(url);
 	if(video_query == null) {
-		currentChannel.sendMessage("There was an error with parsing this url");
+		bot.handleError("There was an error with parsing this url");
 		return;
 	}
 	queueVideo(video_query, message);
