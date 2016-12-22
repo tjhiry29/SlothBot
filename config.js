@@ -1,10 +1,5 @@
 let discord_token = "";
 let youtube_api_key = "";
-let sound_cloud_client_id = "";
-
-exports.setSoundCloudClientId = function(key) {
-	sound_cloud_api_key = key;
-}
 
 exports.setYoutubeApiKey = function(key) {
     youtube_api_key = key;
@@ -24,10 +19,6 @@ exports.getYoutubeKey = function() {
 
 exports.getSoundCloudApiKey = function() {
 	return sound_cloud_api_key;
-}
-
-exports.getSoundCloudClientId = function() {
-	return sound_cloud_client_id
 }
 
 module.exports = exports;

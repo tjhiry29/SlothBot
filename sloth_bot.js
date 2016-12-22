@@ -7,14 +7,11 @@ const VideoSaver = require("./video_saver");
 const commands = require("./commands");
 const config = require("./config");
 
-const youtube_regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
-const soundcloud_regex = /https(?:s?):\/\/(?:www\.)?soundcloud.com/
 const url_regex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/
 var token = null;
 var videoQueue = [];
 var currentStream = null;
 var currentVideo = null;
-var lastVideo = null;
 var currentChannel = null;
 var currentVoiceChannel = null;
 var volume = 0.25; //Default to 1 quarter
