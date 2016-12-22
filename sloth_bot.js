@@ -112,7 +112,7 @@ function displayOrCheckVolume(message, parse) {
 		return;
 	}
 	if (parse && typeof parse != 'string' && parse.length != 0) {
-		parse = parse[1];
+		parse = parse[parse.length - 1];
 	} else {
 		currentChannel.sendMessage("The current volume is " + volume*100.0);
 		return;
