@@ -54,7 +54,7 @@ Commands.prototype.register = function(command, options={}, callback) {
 function buildMatch(match, params=0, prefix="") {
   match = prefix + match;
   for (var i = 0; i < params; i++)  {
-    match += " (.+)";
+    match += "(.+)";
   }
   return match;
 }
