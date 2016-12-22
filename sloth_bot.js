@@ -47,7 +47,6 @@ bot.on("ready", () => {
 	commandHandler.setPrefix("-")
 				// If the yt or sc is forgotten, default to youtube
 				.register("play (yt|youtube)|(.+)", {params: 1}, processYoutubeParameters)
-				.register("play (sc|soundcloud)", {params: 1}, processSoundCloudParameters)
 				.register("commands", {}, displayCommands)
 				.register("(matt meme|mattmeme)", {}, mattMeme)
 				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processYoutubeParameters)
