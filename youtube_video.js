@@ -1,6 +1,7 @@
 const fs = require("fs");
 const ytdl = require('youtube-dl');
 const request = require("superagent");
+const PassThrough = require("stream").PassThrough;
 const config = require("./config");
 
 const youtube_url = "http://www.youtube.com/watch?v="
@@ -27,7 +28,6 @@ YoutubeVideo.getVideo = function(vid, m, callBack) {
       callBack(err, undefined);
     }
     else {
-      console.log(info);
       var video = new YoutubeVideo(vid, info);
       video.userId = m.author.id;
       callBack(undefined, video);
@@ -55,7 +55,6 @@ YoutubeVideo.search = function(query, callback) {
         }
       }
     }
-
   });
 };
 
@@ -65,55 +64,8 @@ YoutubeVideo.prototype.print = function () {
 
 YoutubeVideo.prototype.getStream = function() {
   var format = ["--format=bestaudio"]
-  return ytdl(this.webpage_url, format, {start: 0}) //returns a stream.
-}
-
-YoutubeVideo.downloadVideo = function(info, options) {
-  var output = info.title + ".mp4";
- 
-  var downloaded = 0;
-  if (fs.existsSync(output)) {
-    downloaded = fs.statSync(output).size;
-  }
-  if (output == "undefined.mp4" && downloaded > 0) {
-    this.deleteVideo(output);
-  }
-  let video = ytdl(info.webpage_url,
-    ['--format=bestaudio'],
-    { start: downloaded});
-  // Will be called when the download starts.
-  video.on('info', function(info) {
-    console.log('Download started');
-    console.log('filename: ' + info._filename);
-    // info.size will be the amount to download, add
-    var total = info.size + downloaded;
-    console.log('size: ' + total);
-
-    if (downloaded > 0) {
-      // size will be the amount already downloaded
-      console.log('resuming from: ' + downloaded);
-
-      // display the remaining bytes to download
-      console.log('remaining bytes: ' + info.size);
-    }
-  });
-
-  video.pipe(fs.createWriteStream(output, { flags: 'a' }));
-
-  // Will be called if download was already completed and there is nothing more to download.
-  video.on('complete', function complete(info) {
-    'use strict';
-    console.log('filename: ' + info._filename + ' already downloaded.');
-  });
-
-  video.on('end', function() {
-    console.log('finished downloading!');
-  });
-  this.file_name = output;
-}
-
-YoutubeVideo.deleteVideo = function(file_name) {
-  if(fs.statSync(file_name)) {
-    fs.unlinkSync(file_name);
-  }
+  var stream =  new PassThrough();
+  var video = ytdl(this.webpage_url, format, {start: 0}) //returns a stream.
+  video.pipe(stream);
+  return stream;
 }
