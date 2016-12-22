@@ -210,7 +210,7 @@ function queueVideo(err, video, message) {
 		if (currentVideo == null) {
 			nextInQueue();
 		} else {
-			currentChannel.sendMessage("Video was queued " + video.print() + " queued by " + m.author.username)
+			currentChannel.sendMessage("Video was queued " + video.print() + " queued by " + message.author.username)
 		}
 	}
 } 
