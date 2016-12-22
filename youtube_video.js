@@ -35,6 +35,7 @@ YoutubeVideo.getVideo = function(vid, m, callBack) {
 
 YoutubeVideo.search = function(query, callback) {
   if (youtube_api_key == null) {
+    console.log("No youtube api key provided");
     callback("No youtube api key provided", undefined);
     return;
   }

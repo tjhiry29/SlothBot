@@ -15,7 +15,7 @@ Commands.prototype.setPrefix = function(prefix) {
 }
 
 // Pass through is meant to be a discord message. I'd prefer not to do it this way,
-// as I'd prefer to keep this module completely independent of knowledge of Discord-js
+// as I'd prefer to keep this module completely independent of knowledge of Discord-j or any other objects.
 // so it can be used as a command processer for anything else.
 Commands.prototype.on = function(input, pass_through) {
   if (this.prefix != "" && !input.match("^" + this.prefix)) return;

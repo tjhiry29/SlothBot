@@ -1,13 +1,14 @@
 const Discord = require("discord.js")
 const url = require("url");
+const bot = new Discord.Client();
+
 const YoutubeVideo = require("./youtube_video");
 const VideoSaver = require("./video_saver");
-const bot = new Discord.Client();
 const commands = require("./commands");
 const config = require("./config");
-const regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
 
-let token = null;
+const youtube_regex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/
+var token = null;
 var videoQueue = [];
 var currentStream = null;
 var currentVideo = null;
@@ -20,8 +21,8 @@ var commandHandler = new Commands();
 
 // Grab the arguments
 process.argv.forEach(function (val, index, array) {
-	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)")) {
-		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY)=(.+)");
+	if (val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY|SOUND_CLOUD_CLIENT_ID)")) {
+		var result = val.match("(DISCORD_API_KEY|YOUTUBE_API_KEY|SOUND_CLOUD_CLIENT_ID)=(.+)");
 		if (val.match("DISCORD_API_KEY=(.+)")) { //specifically the discord api key
 			config.setToken(result[2]);
 			token = config.getToken();
@@ -29,6 +30,10 @@ process.argv.forEach(function (val, index, array) {
 		if (val.match("YOUTUBE_API_KEY=(.+)")) { //specifically the youtube api key
 			config.setYoutubeApiKey(result[2]);
 			YoutubeVideo.setYoutubeApiKey(result[2]);
+		}
+		if (val.match("SOUND_CLOUD_CLIENT_ID=(.+)")) {
+			config.setSoundCloudClientId(result[2]);
+			SoundcloudTrack.setSoundCloudClientId(result[2]);
 		}
 	}
 });
@@ -44,15 +49,15 @@ process.on("unhandledRejection", (reason, promise) => {
 
 bot.on("ready", () => {
 	commandHandler.setPrefix("-")
-				.register("play", {params: 1}, processPlayParameters)
+				.register("play (yt|youtube)", {params: 1}, processYoutubeParameters)
+				.register("play (sc|soundcloud)", {params: 1}, processSoundCloudParameters)
 				.register("commands", {}, displayCommands)
-				.register("matt meme", {}, mattMeme).register("-mattmeme", {}, mattMeme)
-				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processPlayParameters)
-				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
+				.register("(matt meme|mattmeme)", {}, mattMeme)
+				.register("mexican beep song", {result: "https://www.youtube.com/watch?v=x47NYUbtYb0"}, processYoutubeParameters)
+				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processYoutubeParameters)
 				.register("next", {}, next)
 				.register("stop", {}, stop)
-				.register("vol", {params: 1}, displayOrCheckVolume)
-				.register("volume", {params: 1}, displayOrCheckVolume);
+				.register("(vol|volume)", {params: 1}, displayOrCheckVolume);
 	console.log("I am ready!");
 });
 
@@ -165,18 +170,22 @@ function stop(message) {
 }
 
 
+function processSoundCloudParameters(message, parse) {
+
+}
+
 //////////////////////////////////////////
 // Code for playing youtube videos.
 //////////////////////////////////////////
-function processPlayParameters(message, parse) {
+function processYoutubeParameters(message, parse) {
 	if (parse == null || parse.length == 0) {
 		handleError("There was an error with the parse:" + parse);
 		return;
 	}
 	if (typeof parse != 'string') { //we can be passed a string
-		parse = parse[1]; //get the result
+		parse = parse[parse.length - 1]; //get the result. should always be the last one.
 	}
-	if (parse.match(regex)){
+	if (parse.match(youtube_regex)){
 		playYoutubeVideoFromUrl(parse, message);
 	} else {
 		var result = YoutubeVideo.search(parse, (err, vid) => {
