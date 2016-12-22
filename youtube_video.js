@@ -1,7 +1,6 @@
 const fs = require("fs");
 const ytdl = require('youtube-dl');
 const request = require("superagent");
-const PassThrough = require("stream").PassThrough;
 const config = require("./config");
 
 const youtube_url = "http://www.youtube.com/watch?v="
@@ -63,9 +62,9 @@ YoutubeVideo.prototype.print = function () {
 }
 
 YoutubeVideo.prototype.getStream = function() {
-  var format = ["--format=bestaudio"]
-  var stream =  new PassThrough();
-  var video = ytdl(this.webpage_url, format, {start: 0}) //returns a stream.
-  video.pipe(stream);
-  return stream;
+  var options = ["--format=bestaudio"]
+  console.log(this.webpage_url);
+  var video = ytdl(this.webpage_url, options, {});
+  console.log(video);
+  return video;
 }
