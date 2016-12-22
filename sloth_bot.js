@@ -18,7 +18,7 @@ var lastVideo = null;
 var currentChannel = null;
 var currentVoiceChannel = null;
 var volume = 0.25; //Default to 1 quarter
-var registeredCommands = null;
+var currentDispatcher = null;
 var commandHandler = new Commands();
 
 // Grab the arguments
@@ -118,8 +118,10 @@ function displayOrCheckVolume(message, parse) {
 	parse = parseInt(parse)
 	if (parse != null) {
 		volume = parse/100.0;
-		extra = currentVideo ? " for the next video" : ""
-		currentChannel.sendMessage("Set volume to " + volume*100.0 + extra);
+		currentChannel.sendMessage("Set volume to " + volume*100.0);
+		if (currentDispatcher) {
+			currentDispatcher.setVolume(volume);
+		}
 	}
 }
 
@@ -238,7 +240,7 @@ function play(video) {
 		});
 		currentVoiceChannel.join().then(connection => {
 			currentChannel.sendMessage("Now playing " + video.print());
-			connection.playStream(currentStream, {volume: volume});
+			currentDispatcher = connection.playStream(currentStream, {volume: volume});
 		}).catch(console.error);
 	} else {
 		currentVideo = null;
@@ -248,7 +250,7 @@ function play(video) {
 
 function stopCurrentVideo() {
 	currentVoiceChannel.leave();
-
+	currentDispatcher = null;
 	currentVideo = null;
 	nextInQueue();
 }
