@@ -190,7 +190,7 @@ function processPlayParameters(message, parse) {
 			if (err) {
 				handleError(err);
 			} else {
-				YoutubeVideo.getVideoFromId(video_id, message, queueVideo)
+				YoutubeVideo.getVideoFromId(video_id, message, queueVideo);
 			}
 		});
 	}

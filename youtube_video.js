@@ -31,7 +31,7 @@ YoutubeVideo.getVideo = function(url, pass_through, callBack) {
       if (info.length) {
         for (var infos of info) {
           var video = new YoutubeVideo(infos);
-          callback(undefined, video, pass_through);
+          callBack(undefined, video, pass_through);
         }
       } else {
         var video = new YoutubeVideo(info);
