@@ -9,7 +9,10 @@ const youtube_api_path = ""
 let youtube_api_key = null;
 
 module.exports = YoutubeVideo = function(info) {
-  this.webpage_url = info.webpage_url
+  this.webpage_url = info.webpage_url;
+  this.title = info.fulltitle;
+  this.source = info.extractor_key;
+  this.author = info.uploader;
   this.info = info;
 }
 
@@ -66,7 +69,7 @@ YoutubeVideo.search = function(query, callback) {
 
 YoutubeVideo.prototype.print = function () {
   // Nothing for now.
-  return this.webpage_url;
+  return this.title + " by " + this.author + " from " + this.source;
 }
 
 YoutubeVideo.prototype.getStream = function() {
