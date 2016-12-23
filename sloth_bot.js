@@ -178,6 +178,7 @@ function clear(message) {
 	}
 	if (videoQueue.length > 0) {
 		videoQueue = [];
+		currentChannel.sendMessage("Successfully cleared the queue!");
 	} else {
 		currentChannel.sendMessage("The queue is empty!");
 	}
