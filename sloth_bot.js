@@ -174,7 +174,7 @@ function processPlayParameters(message, parse) {
 	if (parse == null || parse.length == 0) {
 		handleError("There was an error with the parse: " + parse);
 		return;
-	} 
+	}
 	if (typeof parse != 'string') {
 		parse = parse[parse.length - 1]
 	}
@@ -210,7 +210,7 @@ function queueVideo(err, video, message) {
 			currentChannel.sendMessage("Video was queued " + video.print() + " queued by " + message.author.username)
 		}
 	}
-} 
+}
 
 function nextInQueue() {
 	if (videoQueue.length > 0) {
