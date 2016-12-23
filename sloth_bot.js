@@ -145,6 +145,7 @@ function handleError(err) {
 
 // Video player controls
 
+// Skips to next video if available.
 function next(message) {
 	if (!checkPermissions(message)){
 		return;
@@ -158,7 +159,7 @@ function next(message) {
 }
 
 // Stops playback.
-// Just leaves current voice channel, but doesn't rejoin.
+// Just leaves current voice channel, and doesn't play the next video.
 function stop(message) {
 	if (!checkPermissions(message)){
 		return;
