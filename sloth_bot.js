@@ -52,6 +52,7 @@ bot.on("ready", () => {
 				.register("sexy sax man", {result: "https://www.youtube.com/watch?v=GaoLU6zKaws"}, processPlayParameters)
 				.register("next", {}, next)
 				.register("stop", {}, stop)
+				.register("clear", {}, clear)
 				.register("(volume|vol)", {params: 1}, displayOrCheckVolume);
 	console.log("I am ready!");
 });
@@ -150,11 +151,14 @@ function next(message) {
 	}
 	if (currentVideo != null && videoQueue.length > 0) {
 		stopCurrentVideo();
+		nextInQueue();
 	} else {
 		currentChannel.sendMessage("There's no next video");
 	}
 }
 
+// Stops playback.
+// Just leaves current voice channel, but doesn't rejoin.
 function stop(message) {
 	if (!checkPermissions(message)){
 		return;
@@ -163,6 +167,19 @@ function stop(message) {
 		stopCurrentVideo();
 	} else {
 		currentChannel.sendMessage("There's currently no video being played");
+	}
+}
+
+// Just clears the queue.
+// Doesn't actually stop the current video.
+function clear(message) {
+	if (!checkPermissions(message)){
+		return;
+	}
+	if (videoQueue.length > 0) {
+		videoQueue = [];
+	} else {
+		currentChannel.sendMessage("The queue is empty!");
 	}
 }
 
@@ -228,12 +245,13 @@ function play(video) {
 
 		currentStream.on("error", (err) => {
 			stopCurrentVideo();
+			nextInQueue();
 			handleError(err);
 			return;
 		});
 
 		currentStream.on("end", () => {
-			setTimeout(stopCurrentVideo, 8000)
+			setTimeout(nextInQueue, 8000)
 		});
 		currentVoiceChannel.join().then(connection => {
 			currentChannel.sendMessage("Now playing " + video.print());
@@ -249,7 +267,6 @@ function stopCurrentVideo() {
 	currentVoiceChannel.leave();
 	currentDispatcher = null;
 	currentVideo = null;
-	nextInQueue();
 }
 
 bot.login(token);
