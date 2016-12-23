@@ -149,7 +149,7 @@ function next(message) {
 	if (!checkPermissions(message)){
 		return;
 	}
-	if (currentVideo != null && videoQueue.length > 0) {
+	if (videoQueue.length > 0) {
 		stopCurrentVideo();
 		nextInQueue();
 	} else {
