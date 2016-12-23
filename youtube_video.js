@@ -28,7 +28,7 @@ YoutubeVideo.getVideo = function(url, pass_through, callBack) {
       callBack(err, undefined, pass_through);
     }
     else {
-      if (typeof info == "array") {
+      if (array.length) {
         for (var infos of info) {
           var video = new YoutubeVideo(infos);
           callback(undefined, video, pass_through);
