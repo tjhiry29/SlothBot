@@ -236,6 +236,7 @@ function nextInQueue() {
 		video = videoQueue.shift(); //Pop the next video.
 		play(video);
 	} else {
+		if (currentVoiceChannel) currentVoiceChannel.leave();
 		currentChannel.sendMessage("No more videos in queue.");
 	}
 }
