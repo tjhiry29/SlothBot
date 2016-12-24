@@ -64,10 +64,12 @@ bot.on("message", message => {
 	if (message.content.match(/^-(.+)/)) {
 		console.log(message.content);
 	}
-	findVoiceChannel(message);
-	currentChannel = message.channel;
-	if (!checkGuildPermissions(message)) {
-		return;
+	if (message.guild) { // find channels only if the message is in a server/guild.
+		findVoiceChannel(message);
+		currentChannel = message.channel;
+		if (!checkGuildPermissions(message)) {
+			return;
+		}
 	}
 	commandHandler.on(message.content, message); // Handle the -play commands.
 });
