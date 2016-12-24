@@ -237,6 +237,7 @@ function nextInQueue() {
 		play(video);
 	} else {
 		if (currentVoiceChannel) currentVoiceChannel.leave();
+		currentVideo = null;
 		currentChannel.sendMessage("No more videos in queue.");
 	}
 }
