@@ -167,8 +167,10 @@ function stop(message) {
 		return;
 	}
 	if (currentVideo != null) {
+		videoQueue.shift();
 		stopCurrentVideo();
 	} else {
+		currentVideo = null;
 		currentChannel.sendMessage("There's currently no video being played");
 	}
 }
@@ -223,6 +225,7 @@ function queueVideo(err, video, message) {
 		handleError(err);
 		return;
 	} else {
+		// if video saving on save the actual video, and keep a record in our database.loki, where we can check against our video saver for getting the info.
 		// VideoSaver.save(video);
 		videoQueue.push(video);
 		if (currentVideo == null) {
@@ -257,7 +260,7 @@ function play(video) {
 		});
 
 		currentStream.on("end", () => {
-			setTimeout(nextInQueue, 8000)
+			setTimeout(nextInQueue, 10000);
 		});
 		currentVoiceChannel.join().then(connection => {
 			currentChannel.sendMessage("Now playing " + video.print());
